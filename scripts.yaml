@@ -1,0 +1,5 @@
+restart_ha: !include scripts/restart_ha.yaml
+shutdown_ha: !include scripts/shutdown_ha.yaml
+colorloop: !include scripts/colorloop.yaml
+tts_test: !include scripts/tts_test.yaml
+tts_test2: !include scripts/tts_test2.yaml

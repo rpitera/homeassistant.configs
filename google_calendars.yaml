@@ -1,0 +1,30 @@
+
+- cal_id: rpitera.phone@gmail.com
+  entities:
+  - device_id: rpiteraphonegmailcom
+    name: rpitera.phone@gmail.com
+    track: true
+
+- cal_id: nak3ha37l7pkjrtcbi41qu3kt19glbd4@import.calendar.google.com
+  entities:
+  - device_id: events_for_aapl
+    name: Events for AAPL
+    track: true
+
+- cal_id: '#contacts@group.v.calendar.google.com'
+  entities:
+  - device_id: contacts
+    name: Contacts
+    track: true
+
+- cal_id: en.china#holiday@group.v.calendar.google.com
+  entities:
+  - device_id: holidays_in_china
+    name: Holidays in China
+    track: true
+
+- cal_id: en.usa#holiday@group.v.calendar.google.com
+  entities:
+  - device_id: holidays_in_united_states
+    name: Holidays in United States
+    track: true

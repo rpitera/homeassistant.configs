@@ -1,0 +1,631 @@
+#######################################
+#                                     #
+# Customizations                      #
+#                                     #
+#######################################
+#
+# Sensors
+#
+#
+# DarkSky.io
+ sensor.dark_sky_cloud_coverage:
+   friendly_name: Cloud Coverage
+   icon: mdi:cloud-outline
+ sensor.dark_sky_humidity:
+   friendly_name: Outdoor Humidity
+   icon: mdi:water
+ sensor.dark_sky_pressure:
+   friendly_name: Barometric Pressure
+   icon: mdi:nature
+ sensor.dark_sky_temperature:
+   icon: mdi:thermometer
+   friendly_name: Outdoor Temp
+ sensor.dark_sky_wind_speed:
+   icon: mdi:weather-windy
+   friendly_name: Wind Speed
+ sensor.dark_sky_summary:
+   friendly_name: Condition
+ sensor.dark_sky_ozone:
+   friendly_name: Ozone Levels
+ sensor.dark_sky_precip_probability:
+   friendly_name: Prob of Precip
+   icon: mdi:water-percent
+ sensor.dark_sky_precip:
+   friendly_name: Precip Type
+   icon: mdi:weather-rainy
+ sensor.dark_sky_precip_intensity:
+   friendly_name: Precip Intensity
+   icon: mdi:weather-pouring
+ sensor.dark_sky_visibility:
+   friendly_name: Visibility
+   icon: mdi:weather-fog
+ sensor.dark_sky_nearest_storm_distance:
+   friendly_name: Nearest Storm
+   icon: mdi:weather-lightning
+ sensor.dark_sky_wind_bearing:
+   friendly_name: Wind Bearing
+   icon: mdi:apple-safari
+ sensor.dark_sky_apparent_temperature:
+   friendly_name: Real Feel
+   icon: mdi:account-alert
+ sensor.dark_sky_dew_point:
+   friendly_name: Dew Point
+   icon: mdi:oil-temperature
+#
+#  WeatherUnderground Customizations
+#
+ sensor.pws_weather:
+   friendly_name: Current Conditions
+ sensor.pws_station_id:
+   friendly_name: PWS Station ID
+   icon: mdi:fingerprint
+ sensor.pws_location:
+   friendly_name: Location
+   icon: mdi:earth
+ sensor.pws_elevation:
+   friendly_name: Elev. above sea level
+   icon: mdi:upload
+ sensor.pws_observation_time:
+   friendly_name: Observation Time
+   icon: mdi:calendar-clock
+ sensor.pws_dewpoint_string:
+   friendly_name: Dewpoint String
+   icon: mdi:oil-temperature
+ sensor.pws_uv:
+   friendly_name: UV Index
+   icon: mdi:sunglasses
+ sensor.pws_precip_1hr_string:
+   friendly_name: Precip Last Hour String
+   icon: mdi:cup-water
+ sensor.pws_precip_today_string:
+   friendly_name: Precip Today String
+   icon: mdi:weather-rainy
+ sensor.pws_relative_humidity:
+   friendly_name: Relative Humidity
+   icon: mdi:water-percent
+ sensor.pws_heat_index_string:
+   friendly_name: Heat Index String
+   icon: mdi:thermometer-lines
+ sensor.pws_feelslike_string:
+   friendly_name: Feels Like String
+   icon: mdi:thermometer-lines
+ sensor.pws_wind_dir:
+   friendly_name: Wind Direction
+   icon: mdi:compass
+ sensor.pws_wind_string:
+   friendly_name: Wind String
+   icon: mdi:weather-windy
+ sensor.pws_wind_degrees:
+   friendly_name: Wind Bearing
+   icon: mdi:apple-safari
+ sensor.pws_alerts:
+   friendly_name: Severe Weather Alerts
+   icon: mdi:alert
+ sensor.pws_solarradiation:
+   friendly_name: Solar Radiation
+   icon: mdi:white-balance-sunny
+ sensor.pws_pressure_trend:
+   friendly_name: Pressure Trend
+   icon: mdi:trending-neutral
+#
+# Farenheit/Imperial
+#
+ sensor.pws_dewpoint_f:
+   friendly_name: Dew Point F
+   icon: mdi:oil-temperature
+ sensor.pws_feelslike_f:
+   friendly_name: Feels Like F
+   icon: mdi:account-alert
+ sensor.pws_temp_f:
+   friendly_name: Temperature F
+   icon: mdi:thermometer
+ sensor.pws_heat_index_f:
+   friendly_name: Heat Index F
+   icon: mdi:thermometer-lines
+ sensor.pws_precip_1hr_in:
+   friendly_name: Precip Last Hour in
+   icon: mdi:cup-water
+ sensor.pws_precip_today_in:
+   friendly_name: Precip Today in
+   icon: mdi:water
+ sensor.pws_pressure_in:
+   friendly_name: Barometric Pressure in
+   icon: mdi:nature
+ sensor.pws_visibility_mi:
+   friendly_name: Visibility mi
+   icon: mdi:weather-fog
+ sensor.pws_wind_mph:
+   friendly_name: Sustained Wind Speed MPH
+   icon: mdi:weather-windy
+ sensor.pws_wind_gust_mph:
+   friendly_name: Wind Gust Speed MPH
+   icon: mdi:speedometer
+ sensor.pws_pressure_mb:
+   friendly_name: Barometric Pressure mb
+   icon: mdi:nature
+#
+#  WU Alerts
+#
+ sensor.alert_description:
+   friendly_name: Alert Type
+   icon: mdi:alert
+ sensor.alert_expires:
+   friendly_name: Expires at
+   icon: mdi:timer
+ sensor.alert_message:
+   friendly_name: Message
+   icon: mdi:message-alert
+#
+#  Forecast Summaries
+#
+ sensor.dark_sky_daily_summary:
+   friendly_name: This week
+   icon: mdi:calendar-check
+ sensor.dark_sky_hourly_summary:
+   friendly_name: Today
+   icon: mdi:calendar-today
+ sensor.dark_sky_minutely_summary:
+   friendly_name: Next Hour
+   icon: mdi:alarm
+#
+#  Weather Statistical Sensors
+#
+
+ binary_sensor.temperature_up:
+   icon: mdi:trending-up
+ binary_sensor.temperature_down:
+   icon: mdi:trending-down
+ binary_sensor.pressure_up:
+   icon: mdi:trending-up
+ binary_sensor.pressure_down:
+   icon: mdi:trending-down
+ binary_sensor.humidity_up:
+   icon: mdi:trending-up
+ binary_sensor.humidity_down:
+   icon: mdi:trending-down
+ binary_sensor.wind_speed_up:
+   icon: mdi:trending-up
+ binary_sensor.wind_speed_down:
+   icon: mdi:trending-down
+ binary_sensor.precip_up:
+   icon: mdi:trending-up
+ binary_sensor.precip_down:
+   icon: mdi:trending-down
+
+
+#
+# Speedtest
+#
+ sensor.speedtest_ping:
+   icon: mdi:radar
+ sensor.speedtest_download:
+   icon: mdi:download
+ sensor.speedtest_upload:
+   icon: mdi:upload
+#
+# Glances sensors
+#
+ sensor.rp1_disk_use:
+   friendly_name: Disk Use Percentage
+   icon: mdi:compass
+ sensor.rp1_disk_use_2:
+   friendly_name: Disk Space Used
+   icon: mdi:album
+ sensor.rp1_disk_free:
+   friendly_name: Disk Space Free
+   icon: mdi:adjust
+ sensor.rp1_ram_use:
+   friendly_name: Memory Used Percentage
+   icon: mdi:dns
+ sensor.rp1_ram_use_2:
+   friendly_name: Memory Used
+   icon: mdi:dns
+ sensor.rp1_ram_free:
+   friendly_name: Memory Free
+   icon: mdi:border-horizontal
+ sensor.rp1_swap_use_percent:
+   friendly_name: Swap Used Percentage
+   icon: mdi:cached
+ sensor.rp1_swap_use:
+   friendly_name: Swap Used
+   icon: mdi:cached
+ sensor.rp1_swap_use_2:
+   friendly_name: Swap Free
+   icon: mdi:cached
+ sensor.rp1_swap_free:
+   friendly_name: Swap Free
+   icon: mdi:cached
+ sensor.rp1_cpu_load:
+   friendly_name: CPU Load
+   icon: mdi:flip-to-front
+ sensor.rp1_thread:
+   friendly_name: Threads in Use
+   icon: mdi:animation
+ sensor.rp1_total:
+   friendly_name: Total Tasks
+   icon: mdi:account-multiple
+ sensor.rp1_running:
+   friendly_name: Tasks Running/Active
+   icon: mdi:run
+ sensor.rp1_sleeping:
+   friendly_name: Tasks Sleeping/Inactive
+   icon: mdi:hotel
+#
+# Local Devices
+#
+ sensor.epsonprinter:
+   friendly_name: Epson Artisan Printer
+   icon: mdi:printer
+ sensor.brotherprinter:
+   friendly_name: Brother Laser Printer
+   icon: mdi:printer
+ sensor.zen:
+   friendly_name: ZEN - Win10 Primary Desktop
+   icon: mdi:desktop-tower
+ sensor.satori:
+   friendly_name: SATORI - Win10 Dev/Torrent Host
+   icon: mdi:desktop-tower
+ sensor.nirvana:
+   friendly_name: NIRVANA - Win10 Plex Host
+   icon: mdi:desktop-tower
+ sensor.acurite_wx:
+   friendly_name: AcuRite WX Bridge
+   icon: mdi:signal-variant
+ sensor.ex3700:
+   friendly_name: EX3700 WiFi Extender
+   icon: mdi:access-point-network
+
+#
+# ZWave
+#
+
+# Switches
+ switch.aeotec_smart_energy_switch_switch_9_0:
+  friendly_name: Fireplace
+  icon: mdi:fire
+ switch.aeotec_smart_switch_6_switch_10_0:
+  friendly_name: Washer Power Switch
+  entity_picture: /local/washer.png
+ switch.aeotec_smart_switch_6_switch_11_0:
+  friendly_name: Dryer Power Switch
+  entity_picture: /local/dryer.png
+ switch.office:
+  friendly_name: Office Bookcase Lights
+  icon: mdi:lightbulb
+
+# Switch Sensors
+ sensor.aeotec_smart_energy_switch_power_9_4:
+  friendly_name: Power
+  icon: mdi:power
+ sensor.aeotec_smart_energy_switch_previous_reading_9_1:
+  friendly_name: Previous Reading
+  icon: mdi:gauge
+ sensor.aeotec_smart_energy_switch_voltage_9_15:
+  friendly_name: Voltage
+  icon: mdi:power-socket
+ sensor.aeotec_smart_switch_6_current_10_20:
+  friendly_name: Current
+  icon: mdi:power-plug
+ sensor.aeotec_smart_switch_6_current_11_20:
+  friendly_name: Current
+  icon: mdi:power-plug
+ sensor.aeotec_smart_switch_6_energy_10_0:
+  friendly_name: Energy
+  icon: mdi:flash
+ sensor.aeotec_smart_switch_6_energy_11_0:
+  friendly_name: Energy
+  icon: mdi:flash
+ sensor.aeotec_smart_switch_6_power_10_8:
+  friendly_name: Power
+  icon: mdi:power
+ sensor.aeotec_smart_switch_6_power_11_8:
+  friendly_name: Power
+  icon: mdi:power
+ sensor.aeotec_smart_switch_6_previous_reading_10_1:
+  friendly_name: Previous Reading
+  icon: mdi:gauge
+ sensor.aeotec_smart_switch_6_previous_reading_11_1:
+  friendly_name: Previous Reading
+  icon: mdi:gauge
+ sensor.aeotec_smart_switch_6_voltage_10_16:
+  friendly_name: Voltage
+  icon: mdi:power-socket
+ sensor.aeotec_smart_switch_6_voltage_11_16:
+  friendly_name: Voltage
+  icon: mdi:power-socket
+
+
+# Multisensors
+ binary_sensor.aeotec_multisensor_6_sensor_7_0:
+  friendly_name: LR Motion Sensor
+  icon: mdi:vibrate
+ binary_sensor.aeotec_multisensor_6_sensor_8_0:
+  friendly_name: BR Motion Sensor
+  icon: mdi:vibrate
+ sensor.aeotec_multisensor_6_temperature_7_1:
+  friendly_name: LR Temperature
+  icon: mdi:thermometer-lines
+ sensor.aeotec_multisensor_6_temperature_8_1:
+  friendly_name: BR Temperature
+  icon: mdi:thermometer-lines
+ sensor.aeotec_multisensor_6_relative_humidity_7_5:
+  friendly_name: LR Humidity
+  icon: mdi:water-percent
+ sensor.aeotec_multisensor_6_relative_humidity_8_5:
+  friendly_name: BR Humidty
+  icon: mdi:water-percent
+ sensor.aeotec_multisensor_6_luminance_7_3:
+  friendly_name: LR Light Level
+  icon: mdi:theme-light-dark
+ sensor.aeotec_multisensor_6_luminance_8_3:
+  friendly_name: BR Light Level
+  icon: mdi:theme-light-dark
+ sensor.aeotec_multisensor_6_burglar_7_10:
+  friendly_name: LR Burglar Alarm
+  icon: mdi:security-home
+ sensor.aeotec_multisensor_6_burglar_8_10:
+  friendly_name: BR Burglar Alarm
+  icon: mdi:security-home
+
+#
+# Motion/Alarm Sensors
+#
+ binary_sensor.second_floor:
+   friendly_name: Second Floor Motion
+ binary_sensor.vision_zg8101_garage_door_detector_sensor_12_0:
+  friendly_name: Garage Door
+  icon: mdi:calendar-range
+
+#
+# Nest Protect
+#
+
+ binary_sensor.upstairs_nest_protect_online:
+   friendly_name: Upstairs Nest Protect Online
+   icon: mdi:radio-tower
+ sensor.upstairs_nest_protect_battery_health:
+   friendly_name: Upstairs Battery Health
+   icon: mdi:battery
+ sensor.upstairs_nest_protect_co_status:
+   friendly_name: Upstairs CO Status
+   icon: mdi:heart-pulse
+ sensor.upstairs_nest_protect_smoke_status:
+   friendly_name: Upstairs Smoke Status
+   icon: mdi:fire
+ binary_sensor.downstairs_nest_protect_online:
+   friendly_name: Downstairs Nest Protect Online
+   icon: mdi:radio-tower
+ sensor.downstairs_nest_protect_battery_health:
+   friendly_name: Downstairs Battery Health
+   icon: mdi:battery
+ sensor.downstairs_nest_protect_co_status:
+   friendly_name: Downstairs CO Status
+   icon: mdi:heart-pulse
+ sensor.downstairs_nest_protect_smoke_status:
+   friendly_name: Upstairs Smoke Status
+   icon: mdi:fire
+
+#
+# Traffic Sensors
+#
+ sensor.commute_travel_time:
+   icon: mdi:traffic-light
+ sensor.sandy_hook_travel_time:
+   icon: mdi:ferry
+ sensor.poconos_travel_time:
+   icon: mdi:image-filter-hdr
+ sensor.wilson_borough_travel_time:
+   icon: mdi:home-variant
+
+#
+# Event Calendar
+#
+ sensor.event_title:
+   friendly_name: Next Event
+   icon: mdi:calendar
+ sensor.event_description:
+   friendly_name: Description
+   icon: mdi:calendar-text
+ sensor.event_allday:
+   friendly_name: All Day?
+   icon: mdi:calendar-question
+ sensor.event_start:
+   friendly_name: Start Time
+   icon: mdi:clock-start
+ sensor.event_end:
+   friendly_name: End Time
+   icon: mdi:clock-end
+#
+# Misc. Entities
+#
+ proximity.home:
+   friendly_name: Proximity to Home
+ sun.sun:
+   friendly_name: Sun Position
+ device_tracker.ford_fusion:
+   icon: mdi:car-connected
+ light.landscape:
+   friendly_name: Landscaping Lights
+
+#
+# Misc. Sensors
+#
+ sensor.yr_symbol:
+   friendly_name: Current Conditions
+ sensor.current_ha_version:
+   friendly_name: Current Release Version
+   icon: mdi:timer
+ sensor.droid_battery:
+   friendly_name: Droid Battery Level %
+   icon: mdi:battery
+ sensor.fusion_fuel:
+   friendly_name: Fuel Remaining
+   icon: mdi:gas-station
+ sensor.average_main_temp:
+   icon: mdi:thermometer
+ sensor.average_upstairs_temp:
+   icon: mdi:thermometer
+ sensor.washer_pwrdn:
+   friendly_name: Washer Powered Down
+   icon: mdi:water
+ sensor.dryer_pwrup:
+   friendly_name: Dryer Active
+   icon: mdi:sync
+ sensor.nirvana_2:
+   friendly_name: Plex Acitvity Monitor
+   icon: mdi:projector-screen
+ binary_sensor.mailbox:
+   friendly_name: Mailbox
+   icon: mdi:email
+ sensor.operating_mode:
+   icon: mdi:settings
+ sensor.main_floor_humidity:
+   icon: mdi:water-percent
+
+#
+# Group Customization
+#
+ group.wunderground:
+   friendly_name: Weather Station KNJSCOTC5
+ group.perimiter:
+   friendly_name: Perimiter Security
+   control: hidden
+ group.alarm_system:
+   friendly_name: Alarm Control Panel
+ group.forecast:
+   friendly_name: Forecast Outlook
+ group.weather:
+   friendly_name: Weather Data
+ group.weather_statistics:
+   friendly_name: Weather Statistics
+ group.mediaswitches:
+   friendly_name: Home Theater Control
+ group.all_automations:
+   hidden: false
+   control: hidden
+ group.all_scripts:
+   hidden: false
+   control: hidden
+ group.ha_status:
+   friendly_name: HA System Status
+ group.system_status:
+   friendly_name: Host System Status
+ group.local_devices:
+   friendly_name: Local Device Status
+ group.inputs:
+   friendly_name: Automation Inputs
+   control: hidden
+
+#
+#  Group Order
+#
+ group.aeotec_smart_switch_1:
+   order: "1"
+ group.aeotec_smart_switch_2:
+   order: "2"
+ group.aeotec_smart_energy_switch:
+   order: "3"
+ group.outside:
+   order: "11"
+ group.livingroom:
+   friendly_name: Living Room
+   order: "12"
+ group.hallway:
+   order: "13"
+ group.office:
+   order: "14"
+ group.bedroom:
+   friendly_name: Bed Room
+   order: "15"
+ group.diningroom:
+   friendly_name: Dining Room
+   order: "16"
+ group.tearoom:
+   friendly_name: Tea Room
+   order: "17"
+ group.upstairs:
+   friendly_name: Second Floor
+   order: "18"
+ group.ecobee:
+   order: "19"
+ group.nest_protect_downstairs:
+   friendly_name: Nest Protect Main Floor
+   order: "20"
+ group.nest_protect_upstairs:
+   friendly_name: Nest Protect Second Floor
+   order: "21"
+#
+#
+#  Media Players
+#
+#
+ media_player.my_afts:
+   friendly_name: FireTV Living Room
+ media_player.my_afts_2:
+   friendly_name: FireTV Bedroom
+ media_player.plex:
+   friendly_name: Plex Server
+ media_player.office:
+   friendly_name: GoogleCast Office
+ media_player.living_room_tv:
+   friendly_name: GoogleCast Vizio TV
+ media_player.bath:
+   friendly_name: GoogleCast Bathroom
+ media_player.living_room_home:
+   friendly_name: GoogleHome
+
+
+
+#
+#
+# Switches
+#
+#
+ switch.watch_tv:
+   icon: mdi:television
+ switch.firetvplex:
+   icon: mdi:movie
+ switch.chromecast:
+   icon: mdi:theater
+ switch.bluray:
+   icon: mdi:disk
+#
+#
+# Renames for Hue lights
+#
+#
+ light.lightstrip1:
+   friendly_name: Bedroom TV Bias Light
+ light.lightstrip2:
+   friendly_name: TV Stand Light
+ light.lightstrip3:
+   friendly_name: Rear Light Strip
+ light.lightstrip4:
+   friendly_name: TV Bias Light
+ light.tv_light_l:
+   friendly_name: Uplight Left
+ light.tv_light_r:
+   friendly_name: Uplight Right
+#
+#
+#  Hidden Items  (Also takes care of multiple Hue light entries
+#  between Hue and Wink hubs)
+#
+#
+ switch.siren__strobe:
+   hidden: true
+ light.lightstrip1_2:
+   hidden: true
+ light.lightstrip2_2:
+   hidden: true
+ light.lightstrip3_2:
+   hidden: true
+ light.lightstrip4_2:
+   hidden: true
+ light.tv_light_l_2:
+   hidden: true
+ light.tv_light_r_2:
+   hidden: true
+
+
+

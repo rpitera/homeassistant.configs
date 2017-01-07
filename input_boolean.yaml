@@ -1,0 +1,20 @@
+sunup_switch:
+    name: Toggle the Sun Up Automation
+    initial: off
+    icon: mdi:weather-sunset-up
+sundown_switch:
+    name: Toggle the Sun Down Automation
+    initial: off
+    icon: mdi:weather-sunset-down
+washer_switch:
+    name: Toggle Washer Automation
+    initial: off
+    icon: mdi:water
+dryer_switch:
+    name: Toggle Dryer Automation
+    initial: off
+    icon: mdi:sync
+mailbox_switch:
+    name: Toggle Mailbox Automation
+    initial: off
+    icon: mdi:email

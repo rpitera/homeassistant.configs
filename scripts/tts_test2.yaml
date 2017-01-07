@@ -1,0 +1,6 @@
+sequence:
+- service: tts.google_say
+  entity_id: media_player.living_room_home
+  data_template:
+    message: 'Hello, Robert. The temperature outside is currently {{ states.sensor.dark_sky_temperature.state }} degrees.'
+    cache: false
