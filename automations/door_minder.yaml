@@ -1,0 +1,21 @@
+# Door Open Alert - If doors are open and I leave, remind me
+- alias: 'Door Minder'
+  trigger:
+    platform: state
+    entity_id: device_tracker.rpitera_rpitera
+    from: 'home'
+    to: 'not_home'
+  condition:
+    condition: or
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.front_door_opened
+        state: 'on'
+      - condition: state
+        entity_id: binary_sensor.side_door_opened
+        state: 'on'
+  action:
+    service: notify.pushbullet
+    data_template:
+      message: >
+        Robert, you left one of the entry doors open. Front Door is {{ states.binary_sensor.front_door.state }}.  Side Door is {{ states.binary_sensor.side_door.state }}.

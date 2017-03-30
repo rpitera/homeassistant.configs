@@ -1,0 +1,11 @@
+# Set landscape lights to a random color and turn on 1:45 after sunset
+- alias: 'Landscape Lights'
+  trigger:
+    platform: sun
+    event: sunset
+    offset: 00:01:45
+  action:
+    service: light.turn_on
+    data_template:
+      entity_id: light.landscape
+      rgb_color: ['{{ (range(0, 255)|random) }}', '{{ (range(0, 255)|random) }}', '{{ (range(0, 255)|random) }}']

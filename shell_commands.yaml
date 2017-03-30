@@ -1,0 +1,11 @@
+#Front Cam
+  front_preset_1: '/home/hass/shell_scripts/f_preset1.sh'
+  front_preset_2: '/home/hass/shell_scripts/f_preset2.sh'
+  front_preset_3: '/home/hass/shell_scripts/f_preset3.sh'
+  ir_off: '/home/hass/shell_scripts/ir_off.sh'
+
+#Rear Cam
+  rear_preset_1: '/home/hass/shell_scripts/r_preset1.sh'
+  rear_preset_2: '/home/hass/shell_scripts/r_preset2.sh'
+  rear_preset_3: '/home/hass/shell_scripts/r_preset3.sh'
+  rear_preset_4: '/home/hass/shell_scripts/r_preset4.sh'

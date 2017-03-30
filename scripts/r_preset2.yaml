@@ -1,0 +1,3 @@
+sequence:
+- service: shell_command.rear_preset_2
+

@@ -1,0 +1,8 @@
+- alias: "Watch FireTV started from HASS"
+  trigger:
+    platform: state
+    entity_id: input_select.living_room_tv
+    to: 'Watch FireTV'
+  action:
+    service: script.turn_on
+    entity_id: script.watch_firetv

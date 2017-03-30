@@ -1,0 +1,10 @@
+# Dryer Notification Sequence Start
+- alias: 'Dryer Start'
+  trigger:
+    platform: state
+    entity_id: sensor.dryer_pwrup
+    from: 'False'
+    to: 'True'
+  action:
+    service: input_boolean.turn_on
+    entity_id: input_boolean.dryer_switch

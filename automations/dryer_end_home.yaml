@@ -1,0 +1,22 @@
+# Dryer Notification Sequence Done 
+- alias: 'Dryer Done - home'
+  trigger:
+    platform: state
+    entity_id: sensor.aeotec_smart_switch_6_power_11_8
+    state: '0.0'
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: input_boolean.dryer_switch
+        state: 'on'
+      - condition: state
+        entity_id: device_tracker.rpitera_rpitera
+        state: 'home'
+  action:
+    - service: tts.google_say
+      entity_id: media_player.living_room_home
+      data:
+        message: 'The dryer is finished Robert.'
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.dryer_switch

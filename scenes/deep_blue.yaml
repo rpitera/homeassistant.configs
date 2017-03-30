@@ -1,0 +1,22 @@
+- name: Deep Blue
+  entities:
+    light.lightstrip3:
+        state: on
+        brightness: 254
+        xy_color: [0.1393, 0.0813]
+    light.tv_light_l:
+        state: on
+        brightness: 254
+        xy_color: [0.1765, 0.0579]
+    light.lightstrip4:
+        state: on
+        brightness: 254
+        xy_color: [0.1393, 0.0813]
+    light.lightstrip2:
+        state: on
+        brightness: 254
+        xy_color: [0.1393, 0.0813]
+    light.tv_light_r:
+        state: on
+        brightness: 254
+        xy_color: [0.1765, 0.0579]

@@ -1,0 +1,3 @@
+sequence:
+- service: shell_command.front_preset_2
+

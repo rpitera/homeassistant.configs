@@ -6,6 +6,7 @@
 #
 # Sensors
 #
+# test
 #
 # DarkSky.io
  sensor.dark_sky_cloud_coverage:
@@ -27,6 +28,7 @@
    friendly_name: Condition
  sensor.dark_sky_ozone:
    friendly_name: Ozone Levels
+   icon: mdi:google-circles-group
  sensor.dark_sky_precip_probability:
    friendly_name: Prob of Precip
    icon: mdi:water-percent
@@ -143,18 +145,7 @@
  sensor.pws_pressure_mb:
    friendly_name: Barometric Pressure mb
    icon: mdi:nature
-#
-#  WU Alerts
-#
- sensor.alert_description:
-   friendly_name: Alert Type
-   icon: mdi:alert
- sensor.alert_expires:
-   friendly_name: Expires at
-   icon: mdi:timer
- sensor.alert_message:
-   friendly_name: Message
-   icon: mdi:message-alert
+
 #
 #  Forecast Summaries
 #
@@ -167,6 +158,34 @@
  sensor.dark_sky_minutely_summary:
    friendly_name: Next Hour
    icon: mdi:alarm
+
+#
+#  Yahoo Weather Forecast Summaries
+#
+
+ sensor.day1_condition:
+   friendly_name: Tomorrow
+ sensor.day1_temperature_max:
+   friendly_name: High
+ sensor.day1_temperature_min:
+   friendly_name: Low  
+ sensor.day2_condition:
+   friendly_name: Next Day
+ sensor.day2_temperature_max:
+   friendly_name: High
+ sensor.day2_temperature_min:
+   friendly_name: Low
+ sensor.day3_condition:
+   friendly_name: Third Day
+ sensor.day3_temperature_max:
+   friendly_name: High
+ sensor.day3_temperature_min:
+   friendly_name: Low   
+
+
+
+
+
 #
 #  Weather Statistical Sensors
 #
@@ -370,11 +389,37 @@
 #
 # Motion/Alarm Sensors
 #
- binary_sensor.second_floor:
+ binary_sensor.second_floor_motion:
    friendly_name: Second Floor Motion
+   icon: mdi:vibrate
+ binary_sensor.office_motion:
+   friendly_name: Office Motion
+   icon: mdi:vibrate
+ binary_sensor.tearoom_motion:
+   friendly_name: Tea Room Motion
+   icon: mdi:vibrate
  binary_sensor.vision_zg8101_garage_door_detector_sensor_12_0:
-  friendly_name: Garage Door
-  icon: mdi:calendar-range
+   friendly_name: Garage Door
+   icon: mdi:calendar-range
+ binary_sensor.dining_room_1_opened:
+   friendly_name: Dining Room Window 1
+   icon: mdi:window-closed
+ binary_sensor.dining_room_2_opened:
+   friendly_name: Dining Room Window 2
+   icon: mdi:window-closed
+ binary_sensor.front_door_opened:
+   friendly_name: Front Door
+   icon: mdi:cellphone
+ binary_sensor.side_door_opened:
+   friendly_name: Side Door
+   icon: mdi:cellphone
+ binary_sensor.kitchen_entry_opened:
+   friendly_name: Kitchen Entry
+   icon: mdi:cellphone
+ binary_sensor.tea_room_slider_opened:
+   friendly_name: Tea Room Slider
+   icon: mdi:border-vertical
+
 
 #
 # Nest Protect
@@ -408,8 +453,10 @@
 #
 # Traffic Sensors
 #
- sensor.commute_travel_time:
-   icon: mdi:traffic-light
+ sensor.ewr_travel_time:
+   icon: mdi:airplane
+ sensor.bridgewater_area_travel_time:
+   icon: mdi:cart
  sensor.sandy_hook_travel_time:
    icon: mdi:ferry
  sensor.poconos_travel_time:
@@ -435,6 +482,45 @@
  sensor.event_end:
    friendly_name: End Time
    icon: mdi:clock-end
+
+#
+# Media Players
+#
+# media_player.shield:
+#   friendly_name: Shield Plex
+# media_player.shield_2:
+#   friendly_name: Shield Cast   
+# media_player.shield_3:
+#   friendly_name: Shield Plexdevices  
+
+
+
+#
+# Camera Presets
+#
+#
+
+ script.f_ir_off:
+   friendly_name: front ir off
+ 
+ script.f_preset1:
+   friendly_name: street view
+ script.f_preset2:
+   friendly_name: view southwest
+ script.f_preset3:
+   friendly_name: front walk
+ 
+ script.r_preset1:
+   friendly_name: bedroom window
+ script.r_preset2:
+   friendly_name: tearoom interior
+ script.r_preset3:
+   friendly_name: yard north
+ script.r_preset4:
+   friendly_name: yard northwest
+
+
+#
 #
 # Misc. Entities
 #
@@ -446,15 +532,27 @@
    icon: mdi:car-connected
  light.landscape:
    friendly_name: Landscaping Lights
+ switch.outlet_1:
+   friendly_name: Pivot Power Outlet 1 (Fan)
+   icon: mdi:fan
+ switch.outlet_2:
+   friendly_name: Pivot Power Outlet 2 (Plant Light)
+   icon: mdi:leaf
+ script.radio538:
+   friendly_name: Start Playing
+   icon: mdi:play  
+ script.ecobee_resume:
+   friendly_name: Resume Program
+   icon: mdi:backup-restore
+ input_select.log_level:
+   friendly_name: Logger Level
+   icon: mdi:sort
 
 #
 # Misc. Sensors
 #
  sensor.yr_symbol:
    friendly_name: Current Conditions
- sensor.current_ha_version:
-   friendly_name: Current Release Version
-   icon: mdi:timer
  sensor.droid_battery:
    friendly_name: Droid Battery Level %
    icon: mdi:battery
@@ -465,8 +563,8 @@
    icon: mdi:thermometer
  sensor.average_upstairs_temp:
    icon: mdi:thermometer
- sensor.washer_pwrdn:
-   friendly_name: Washer Powered Down
+ sensor.washer_pwrup:
+   friendly_name: Washer Active
    icon: mdi:water
  sensor.dryer_pwrup:
    friendly_name: Dryer Active
@@ -474,32 +572,46 @@
  sensor.nirvana_2:
    friendly_name: Plex Acitvity Monitor
    icon: mdi:projector-screen
- binary_sensor.mailbox:
+ binary_sensor.mailbox_opened:
    friendly_name: Mailbox
    icon: mdi:email
  sensor.operating_mode:
    icon: mdi:settings
  sensor.main_floor_humidity:
    icon: mdi:water-percent
+ sensor.current_ha_version:
+   friendly_name: Current Release Version
+   icon: mdi:github-circle
+ sensor.installed_version:
+   icon: mdi:folder-download
+ sensor.dark_sky_lu:
+   icon: mdi:update
+ binary_sensor.ring_front_door_ding:
+   friendly_name: Doorbell Press
+ binary_sensor.ring_front_door_motion:
+   friendly_name: Doorbell Motion
+
+
+
 
 #
 # Group Customization
 #
  group.wunderground:
-   friendly_name: Weather Station KNJSCOTC5
+   friendly_name: weather station KNJSCOTC5
  group.perimiter:
-   friendly_name: Perimiter Security
+   friendly_name: perimiter security
    control: hidden
  group.alarm_system:
-   friendly_name: Alarm Control Panel
+   friendly_name: alarm control
  group.forecast:
-   friendly_name: Forecast Outlook
+   friendly_name: forecast
  group.weather:
-   friendly_name: Weather Data
+   friendly_name: weather data
  group.weather_statistics:
-   friendly_name: Weather Statistics
+   friendly_name: weather stats
  group.mediaswitches:
-   friendly_name: Home Theater Control
+   friendly_name: home theater control
  group.all_automations:
    hidden: false
    control: hidden
@@ -507,14 +619,24 @@
    hidden: false
    control: hidden
  group.ha_status:
-   friendly_name: HA System Status
+   friendly_name: versioning
  group.system_status:
-   friendly_name: Host System Status
+   friendly_name: host system status
  group.local_devices:
-   friendly_name: Local Device Status
+   friendly_name: local device status
  group.inputs:
-   friendly_name: Automation Inputs
+   friendly_name: automation inputs
    control: hidden
+ group.outdoor_lighting:
+   friendly_name: outdoor lighting
+ group.motion_sensors:
+   friendly_name: motion detection
+   control: hidden
+ group.camera_presets:
+   friendly_name: camera presets
+   control: hidden
+ 
+
 
 #
 #  Group Order
@@ -526,34 +648,27 @@
  group.aeotec_smart_energy_switch:
    order: "3"
  group.outside:
-   order: "11"
+   order: "4"
  group.livingroom:
-   friendly_name: Living Room
-   order: "12"
+   order: "5"
  group.hallway:
-   order: "13"
+   order: "6"
  group.office:
-   order: "14"
+   order: "7"
  group.bedroom:
-   friendly_name: Bed Room
-   order: "15"
+   order: "8"
  group.diningroom:
-   friendly_name: Dining Room
-   order: "16"
+   order: "9"
  group.tearoom:
-   friendly_name: Tea Room
-   order: "17"
+   order: "10"
  group.upstairs:
-   friendly_name: Second Floor
-   order: "18"
+   order: "11"
  group.ecobee:
-   order: "19"
+   order: "12"
  group.nest_protect_downstairs:
-   friendly_name: Nest Protect Main Floor
-   order: "20"
+   order: "13"
  group.nest_protect_upstairs:
-   friendly_name: Nest Protect Second Floor
-   order: "21"
+   order: "14"
 #
 #
 #  Media Players
@@ -565,6 +680,8 @@
    friendly_name: FireTV Bedroom
  media_player.plex:
    friendly_name: Plex Server
+ media_player.plex_1:
+   friendly_name: Plex Server 
  media_player.office:
    friendly_name: GoogleCast Office
  media_player.living_room_tv:
@@ -573,22 +690,37 @@
    friendly_name: GoogleCast Bathroom
  media_player.living_room_home:
    friendly_name: GoogleHome
+#
+#
+#  Almanac Sensors
+#
+#
+ sensor.nextsunrise:
+   icon: mdi:weather-sunset-up
+ sensor.nextsunset:
+   icon: mdi:weather-sunset-down
+ sensor.dayofyear:
+   icon: mdi:calendar-today
+ sensor.weekofyear:
+   icon: mdi:calendar-range
+ sensor.moon:
+   unit_of_measurement:  
+#
+#
+#  Ring Sensors
+#
+#
+ sensor.ring_first_floor_volume:
+   friendly_name: Chime Volume
+ sensor.ring_front_door_battery:
+   friendly_name: Ring Battery Level
+ sensor.ring_front_door_last_activity:
+   friendly_name: Last Acitvity
+ sensor.ring_front_door_motion_sensor:
+   friendly_name: Motion Sensor
+ sensor.ring_front_door_volume:
+   friendly_name: Ring Volume 
 
-
-
-#
-#
-# Switches
-#
-#
- switch.watch_tv:
-   icon: mdi:television
- switch.firetvplex:
-   icon: mdi:movie
- switch.chromecast:
-   icon: mdi:theater
- switch.bluray:
-   icon: mdi:disk
 #
 #
 # Renames for Hue lights

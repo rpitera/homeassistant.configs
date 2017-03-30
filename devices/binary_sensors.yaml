@@ -1,0 +1,54 @@
+####################################################
+#                                                  #
+#                Binary Sensors                    #
+#                                                  #
+####################################################
+
+-  platform: trend
+   entity_namespace: wx
+   sensors:
+     temperature_up:
+       friendly_name: 'Apparent Temp Rising'
+       entity_id: sensor.pws_feelslike_f
+       sensor_class: heat
+     temperature_down:
+       friendly_name: 'Apparent Temp Falling'
+       entity_id: sensor.pws_feelslike_f
+       sensor_class: cold
+       invert: Yes
+     pressure_up:
+       friendly_name: 'Barometric Pressure Rising'
+       entity_id: sensor.pws_pressure_in
+     pressure_down:
+       friendly_name: 'Barometric Pressure Falling'
+       entity_id: sensor.pws_pressure_in
+       invert: Yes
+     humidity_up:
+       friendly_name: 'Relative Humidity Rising'
+       entity_id: sensor.dark_sky_humidity
+     humidity_down:
+       friendly_name: 'Relative Humidity Falling'
+       entity_id: sensor.dark_sky_humidity
+       invert: Yes
+     wind_speed_up:
+       friendly_name: 'Sustained Wind Speed Increasing'
+       entity_id: sensor.pws_wind_mph
+     wind_speed_down:
+       friendly_name: 'Sustained Wind Speed Decreasing'
+       entity_id: sensor.pws_wind_mph
+       invert: Yes
+     precip_up:
+       friendly_name: 'Probability of Precip Increasing'
+       entity_id: sensor.dark_sky_precip_probability
+     precip_down:
+       friendly_name: 'Probability of Precip Decreasing'
+       entity_id: sensor.dark_sky_precip_probability
+       invert: Yes
+
+# -  platform: ring
+#    username: !secret ring_username
+#    password: !secret ring_password
+#    entity_namespace: 'ring'
+#    monitored_conditions:
+#      - ding
+#      - motion

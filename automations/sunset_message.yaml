@@ -1,0 +1,12 @@
+#- alias: 'Sunset Message'
+#  trigger:
+#    platform: sun
+#    event: sunset
+#  condition:
+#    condition: state
+#    entity_id: input_boolean.sundown_switch
+#    state: 'on'
+#  action:
+#    service: notify.ecobee
+#    data:
+#      message: 'The sun has set Robert. Have a good evening.'

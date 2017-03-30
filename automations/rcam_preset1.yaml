@@ -1,0 +1,8 @@
+- alias: "Rear Cam Preset 1"
+  trigger:
+    platform: state
+    entity_id: input_select.camera2
+    to: 'bedroom window'
+  action:
+    service: script.turn_on
+    entity_id: script.r_preset1

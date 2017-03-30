@@ -1,38 +1,66 @@
+
 # Front Inside Camera
 - platform: mjpeg
   mjpeg_url: !secret cam1_url
   authentication: digest
-  name: Front of House
+  name: interior street facing controllable
 # Front Outside Camera
-- platform: mjpeg
-  mjpeg_url: !secret cam2_url
-  authentication: digest
-  name: Front Outside House
+#- platform: mjpeg
+#  mjpeg_url: !secret cam2_url
+#  authentication: digest
+#  name: outside front right fixed
 # Rear Camera
 - platform: mjpeg
   mjpeg_url: !secret cam3_url
   authentication: digest
-  name: Rear of House
+  name: rear facing controllable
   username: !secret cam_user
   password: !secret cam_password
-# Rear Camera
+# Front Outside Alt
+#- platform: mjpeg
+#  mjpeg_url: !secret cam4_url
+#  authentication: digest
+#  name: outside front left fixed
+#  username: !secret cam_user
+#  password: !secret cam_password
+# Bedroom Camera
 - platform: mjpeg
-  mjpeg_url: !secret cam4_url
-  name: Front Outside House Alt
+  mjpeg_url: !secret cam5_url
+  authentication: digest
+  name: interior bedroom fixed
   username: !secret cam_user
   password: !secret cam_password
+  
 # WX Radar
 - platform: generic
-  still_image_url: https://radblast.wunderground.com/cgi-bin/radar/WUNIDS_map?station=EWR&brand=wui&num=10&delay=25&type=TR0&frame=0&scale=1.000&noclutter=0&showstorms=0&mapx=400&mapy=240&centerx=400&centery=240&transx=0&transy=0&showlabels=1&severe=0&rainsnow=1&lightning=0&smooth=0&rand=24562171&lat=0&lon=0&label=you
+  still_image_url: https://radblast.wunderground.com/cgi-bin/radar/WUNIDS_map?station=EWR&brand=wui&num=12&delay=25&type=TR0&frame=0&scale=1.000&noclutter=0&showstorms=0&mapx=400&mapy=240&centerx=400&centery=240&transx=0&transy=0&showlabels=1&severe=0&rainsnow=1&lightning=0&smooth=0&rand=24562171&lat=0&lon=0
   name: NY Metro WX Radar
 - platform: generic
-  still_image_url: https://radblast.wunderground.com/cgi-bin/radar/WUNIDS_map?station=EWR&brand=wui&num=1&delay=15&type=NTP&frame=0&scale=1.000&noclutter=0&showstorms=0&mapx=400&mapy=240&centerx=400&centery=240&transx=0&transy=0&showlabels=1&severe=0&rainsnow=0&lightning=0&smooth=0&rand=24399683&lat=0&lon=0&label=you
+  still_image_url: https://radblast.wunderground.com/cgi-bin/radar/WUNIDS_map?station=EWR&brand=wui&num=12&delay=25&type=NTP&frame=0&scale=1.000&noclutter=0&showstorms=0&mapx=400&mapy=240&centerx=400&centery=240&transx=0&transy=0&showlabels=1&severe=0&rainsnow=0&lightning=0&smooth=0&rand=24399683&lat=0&lon=0
   name: NY Metro Precip
+- platform: generic
+  still_image_url: https://radblast.wunderground.com/cgi-bin/radar/WUNIDS_map?station=EWR&brand=wui&num=12&delay=25&type=TR0&frame=0&scale=-1.000&noclutter=0&showstorms=0&mapx=400&mapy=240&centerx=400&centery=240&transx=0&transy=0&showlabels=1&severe=0&rainsnow=1&lightning=0&smooth=0&rand=24562171&lat=40.658939&lon=-74.39030385
+  name: Local WX Radar
+- platform: generic
+  still_image_url: https://radblast.wunderground.com/cgi-bin/radar/WUNIDS_map?station=EWR&brand=wui&num=12&delay=25&type=NTP&frame=0&scale=-1.000&noclutter=0&showstorms=0&mapx=400&mapy=240&centerx=400&centery=240&transx=225&transy=150&showlabels=1&severe=0&rainsnow=0&lightning=1&smooth=0&rand=24399683&lat=40.658939&lon=-74.39030385
+  name: Local Precip
 - platform: generic
   still_image_url: http://www.ssd.noaa.gov/goes/east/eaus/rgb-animated.gif
   name: GOES East Sat
 # GMap Tracker
 - platform: generic
   name: Robert
-  still_image_url: https://maps.googleapis.com/maps/api/staticmap?center={{ states.device_tracker.rpitera_rpitera.attributes.latitude }},{{ states.device_tracker.rpitera_rpitera.attributes.longitude }}&zoom=13&size=500x500&maptype=roadmap&layer=t&markers=color:blue%7Clabel:R%7C{{ states.device_tracker.rpitera_rpitera.attributes.latitude }},{{ states.device_tracker.rpitera_rpitera.attributes.longitude }}
+  still_image_url: https://maps.googleapis.com/maps/api/staticmap?center={{ states.device_tracker.rpitera_rpitera.attributes.latitude }},{{ states.device_tracker.rpitera_rpitera.attributes.longitude }}&zoom=13&size=500x500&maptype=roadmap&markers=color:blue%7Clabel:R%7C{{ states.device_tracker.rpitera_rpitera.attributes.latitude }},{{ states.device_tracker.rpitera_rpitera.attributes.longitude }}
   limit_refetch_to_url_change: true
+
+# FFMPEG RTSP Tests
+- platform: ffmpeg
+  name: outside front right fixed
+  input: http://admin:trustno1@192.168.1.10/livestream.cgi?user=admin&pwd=trustno1&streamid=0
+
+- platform: ffmpeg
+  name: outside front left fixed
+  input: http://admin:trustno1@192.168.1.15/livestream.cgi?user=admin&pwd=trustno1&streamid=0
+
+
+

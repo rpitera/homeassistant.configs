@@ -3,11 +3,14 @@
 #                     Sensors                      #
 #                                                  #
 ####################################################
+
+#
 #
 # Weather (darksky.io)
 #
 -  platform: darksky
    api_key: !secret forecast_io_api_key
+   update_interval: 300
    monitored_conditions:
      - summary
      - icon
@@ -28,6 +31,7 @@
      - minutely_summary
      - hourly_summary
      - daily_summary
+
 #
 # Internet (Speedtest)
 #
@@ -96,21 +100,22 @@
 #
 #
 #
--  platform: yr
-   monitored_conditions:
-     - symbol
-#
-#
-#
 -  platform: google_travel_time
-   name: Commute Travel Time
+   name: EWR Travel Time
    api_key: !secret google_maps_api_key
    origin: 40.65894, -74.39036
-   destination: 40.7380001, -74.1717712
+   destination: 40.690260, -74.174455
    options:
      mode: driving
-#
-#
+
+-  platform: google_travel_time
+   name: Bridgewater Area Travel Time
+   api_key: !secret google_maps_api_key
+   origin: 40.65894, -74.39036
+   destination: 40.578835, -74.628694
+   options:
+     mode: driving
+
 -  platform: google_travel_time
    name: Sandy Hook Travel Time
    api_key: !secret google_maps_api_key
@@ -118,8 +123,7 @@
    destination: 40.46044, -73.99323
    options:
      mode: driving
-#
-#
+
 -  platform: google_travel_time
    name: Wilson Borough Travel Time
    api_key: !secret google_maps_api_key
@@ -127,8 +131,7 @@
    destination: 40.677898, -75.243573
    options:
      mode: driving
-#
-#
+
 -  platform: google_travel_time
    name: Poconos Travel Time
    api_key: !secret google_maps_api_key
@@ -139,7 +142,8 @@
 #
 #
 #
-# WeatherUnderground (Custom)
+#
+# WeatherUnderground 
 #
 -  platform: wunderground
    api_key: !secret wunderground_api_key
@@ -173,6 +177,10 @@
       - solarradiation
       - alerts
 
+
+
+
+
 #
 # Sensor Value Templating
 #
@@ -190,7 +198,7 @@
      zen:
        value_template: "{% if is_state('sensor.zen_snmp', 'ZEN') %}System Up{% else %}System Offline{% endif %}"
      acurite_wx:
-       value_template: "{% if is_state('device_tracker.1921681163', 'home') %}transmitting{% else %}down{% endif %}"
+       value_template: "{% if is_state('device_tracker.acurite', 'home') %}transmitting{% else %}down{% endif %}"
      ex3700:
        value_template: "{% if is_state('device_tracker.ex3700fiosrouterhome', 'home') %}TX/RX Up{% else %}down{% endif %}"
 
@@ -207,13 +215,15 @@
 #
 #    True when washer power level is below 3.4 watts, high threshold of resting state
 #    Default state is true
-     washer_pwrdn:
-       value_template: "{{ states('sensor.aeotec_smart_switch_6_power_10_8') | int < 3.4 }}"
+     washer_pwrup:
+       value_template: "{{ states('sensor.aeotec_smart_switch_6_power_10_8') | int > 3.4 }}"
+       
 
 #    True when Dryer power level is above 8.4 watts, showing dryer is in operation (as opposed to just having the door open)
 #    Default state is false
      dryer_pwrup:
        value_template: "{{ states('sensor.aeotec_smart_switch_6_power_11_8') | int > 8.4 }}"
+       
 #
 #
 #   Average Home Temp
@@ -229,24 +239,7 @@
        friendly_name: 'Average Second Floor Temp'
        unit_of_measurement: "°F"
        value_template: >-
-         {{ ((float(states.sensor.upstairs_temperature.state) + float(states.sensor.upstairs_temperature_2.state) + float(states.sensor.second_floor_temperature.state)) / 3) | round(1) }}
-#
-#
-#  Weather Alert Sensors
-#
-#
-     alert_description:
-       friendly_name: 'Alert Type'
-       value_template: "{{ states.sensor.pws_alerts.attributes.Description }}"
-
-     alert_expires:
-       friendly_name: 'Expires at'
-       value_template: "{{ states.sensor.pws_alerts.attributes.Expires }}"
-
-     alert_message:
-       friendly_name: 'Alert Message'
-       value_template: "{{ states.sensor.pws_alerts.attributes.Message }}"
-
+         {{ ((float(states.sensor.upstairs_temperature.state) + float(states.sensor.second_floor_temperature.state)) / 2) | round(1) }}
 
 #
 #
@@ -267,11 +260,11 @@
 
      event_start:
        friendly_name: 'Event Time'
-       value_template: "{{ states.calendar.rpiteraphonegmailcom.attributes.start_time }}"
+       value_template: "{{ as_timestamp(states.calendar.rpiteraphonegmailcom.attributes.start_time) | timestamp_custom('%D %-I:%M %P') }}"
 
      event_end:
        friendly_name: 'Event Time'
-       value_template: "{{ states.calendar.rpiteraphonegmailcom.attributes.end_time }}"
+       value_template: "{{ as_timestamp(states.calendar.rpiteraphonegmailcom.attributes.end_time) | timestamp_custom('%D %-I:%M %P') }}"
 
 
 #
@@ -283,7 +276,54 @@
        friendly_name: 'Current Operation'
        value_template: "{{ states.climate.main_floor.attributes.operation }}"
 
+#
+#
+#  Harmony Activity Sensor
+#
+#
+     current_activity:
+       friendly_name: 'Current Activity'
+       value_template: "{{ states.remote.living_room.attributes.current_activity }}"
 
+
+#
+#
+#  Almanac Sensors
+#
+#
+
+     nextsunrise:
+       friendly_name: 'Next Sunrise'
+       value_template: "{{ as_timestamp(states.sun.sun.attributes.next_rising) | timestamp_custom('%D %-I:%M %P') }}"
+
+     nextsunset:
+       friendly_name: 'Next Sunset'
+       value_template: "{{ as_timestamp(states.sun.sun.attributes.next_setting) | timestamp_custom('%D %-I:%M %P') }}"
+       
+     dayofyear:
+       friendly_name: 'Day Number'
+       value_template: "{{ now().strftime('%j') }}"
+
+     weekofyear:
+       friendly_name: 'Week Number'
+       value_template: "{{ now().strftime('%U') }}"
+
+#
+#
+#  Sensor last updates
+#
+#
+
+     dark_sky_lu:
+       friendly_name: Forecast Last Updated
+       value_template: '{{(as_timestamp(now())-as_timestamp(states.sensor.dark_sky_minutely_summary.last_updated)) | int //60 }} Minutes Ago' 
+       
+#
+#
+#  Moon phase sensor
+#
+#
+- platform: moon
 
 #
 #
@@ -294,38 +334,6 @@
    name: Temperature Stats
    entity_id: sensor.pws_temp_f
 
-#
-#  Scraper Sensors
-#
-#
--  platform: scrape
-   resource: http://status.winkapp.com/
-   name: Overall Wink Status
-   select: "span:nth-of-type(5)"
--  platform: scrape
-   resource: http://status.winkapp.com/
-   name: Wink.com
-   select: "span:nth-of-type(9)"
--  platform: scrape
-   resource: http://status.winkapp.com/
-   name: Wink core API
-   select: "span:nth-of-type(13)"
--  platform: scrape
-   resource: http://status.winkapp.com/
-   name: Wink hub API
-   select: "span:nth-of-type(16)"
--  platform: scrape
-   resource: http://status.winkapp.com/
-   name: Nest integration
-   select: "span:nth-of-type(19)"
--  platform: scrape
-   resource: http://status.winkapp.com/
-   name: TCP integration
-   select: "span:nth-of-type(22)"
--  platform: scrape
-   resource: http://status.winkapp.com/
-   name: Echo integration
-   select: "span:nth-of-type(34)"
 
 #
 #
@@ -352,7 +360,8 @@
    host: 192.168.1.170
    name: satori_snmp
    baseoid: 1.3.6.1.2.1.1.5.0
-   
+
+
 #
 #
 #  MQTT Sensors
@@ -364,3 +373,100 @@
   name: 'Droid Battery'
   unit_of_measurement: '%'
   value_template: '{{ value_json.batt }}'
+
+#
+#
+#  Air Quality Index
+#
+#
+
+- platform: waqi
+  token: !secret waqi_token
+  locations:
+    - Rahway
+
+#
+#
+# Ring Doorbell (beta)
+#
+- platform: ring
+  username: !secret ring_username
+  password: !secret ring_password
+  entity_namespace: 'ring'
+  monitored_conditions:
+    - battery
+    - last_activity
+    - volume
+
+#
+#
+#  Yahoo Weather Forecasting
+#
+#
+
+- platform: yweather
+  forecast: 1
+  name: day1
+  monitored_conditions:
+    - weather
+    - temp_min
+    - temp_max
+
+- platform: yweather
+  forecast: 2
+  name: day2
+  monitored_conditions:
+    - weather
+    - temp_min
+    - temp_max
+
+- platform: yweather
+  forecast: 3
+  name: day3
+  monitored_conditions:
+    - weather
+    - temp_min
+    - temp_max
+
+
+
+
+####################################################
+#                                                  #
+#               Disabled Sensors                   #
+#                                                  #
+####################################################
+
+
+#
+#  Scraper Sensors
+#
+#
+#-  platform: scrape
+#   resource: http://status.winkapp.com/
+#   name: Overall Wink Status
+#   select: "span:nth-of-type(5)"
+#-  platform: scrape
+#   resource: http://status.winkapp.com/
+#   name: Wink.com
+#   select: "span:nth-of-type(9)"
+#-  platform: scrape
+#   resource: http://status.winkapp.com/
+#   name: Wink core API
+#   select: "span:nth-of-type(13)"
+#-  platform: scrape
+#   resource: http://status.winkapp.com/
+#   name: Wink hub API
+#   select: "span:nth-of-type(16)"
+#-  platform: scrape
+#   resource: http://status.winkapp.com/
+#   name: Nest integration
+#   select: "span:nth-of-type(19)"
+#-  platform: scrape
+#   resource: http://status.winkapp.com/
+#   name: TCP integration
+#   select: "span:nth-of-type(22)"
+#-  platform: scrape
+#   resource: http://status.winkapp.com/
+#   name: Echo integration
+#   select: "span:nth-of-type(34)"    

@@ -1,0 +1,21 @@
+# Precip Alert - Home version
+- alias: 'Precip Alert'
+  trigger:
+    platform: state
+    entity_id: sensor.dark_sky_precip_intensity
+    from: '0'
+  condition:
+    condition: time
+    after: '8:00:00'
+    before: '23:00:00'
+  action:
+    - service: tts.google_say
+      entity_id: media_player.living_room_home
+      data_template:
+        message: 'Excuse me Robert, but precipitation is expected. It is currently {{ states.sensor.dark_sky_temperature.state | int }}degrees outside.  Forecast says {{ states.sensor.dark_sky_minutely_summary.state }}.'
+        cache: false
+    - service: automation.turn_off
+      entity_id: automation.raining
+    - delay: 00:30:00
+    - service: automation.turn_on
+      entity_id: automation.raining

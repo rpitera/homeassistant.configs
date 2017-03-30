@@ -1,0 +1,70 @@
+living_room_tv:
+  name: Living Room TV
+  options:
+    - Powered Off
+    - Watch TV
+    - Watch FireTV
+    - Watch a DVD
+    - AndroidTV
+    - Listen to Music
+  initial: Powered Off
+  icon: mdi:monitor
+camera1:
+  name: Front Camera Presets
+  options:
+    - street view
+    - view southwest
+    - front walk
+  initial: street view
+  icon: mdi:camcorder
+camera2:
+  name: Rear Camera Presets
+  options:
+    - bedroom window
+    - tearoom interior
+    - yard north
+    - yard northwest
+  initial: bedroom window
+  icon: mdi:camcorder
+radio_station:
+  name: 'Select Radio Station:'
+  options:
+    - Radio 538
+    - Q-Music
+    - 3FM
+    - Classic Rock Florida
+    - Veronica
+    - Smooth Jazz Tampa
+    - Sky Radio
+    - Arrow Classic Rock
+    - Classic FM
+    - Relaxation Radio
+    - Nature Sounds
+    - Sleep Radio
+    - Ambient Sleeping Pill
+    - Radio Art - Sleep
+    - Ambi Nature Radio
+    - Calm Radio - Sleep
+    - Dinamo.FM Sleep
+chromecast_radio:
+  name: 'Select Speakers:'
+  options:
+    - Living Room
+    - Bedroom
+    - Bath
+    - Office
+    - Multi-Room
+  initial: Multi-Room
+  icon: mdi:speaker-wireless
+log_level:
+  name: Log Level
+  options:
+    - critical
+    - fatal
+    - error
+    - warning
+    - warn
+    - info
+    - debug
+    - notset
+  initial: error

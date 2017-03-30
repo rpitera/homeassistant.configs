@@ -1,0 +1,21 @@
+# Notify when Mail has arrived - Not Home
+- alias: 'Mail Alert Away'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.mailbox_opened
+    from: 'off'
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: input_boolean.mailbox_switch
+        state: 'off'
+      - condition: state
+        entity_id: device_tracker.rpitera_rpitera
+        state: 'not_home'
+  action:
+    - service: notify.pushbullet
+      data:
+        message: 'Mail has been delivered, Robert.'
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.mailbox_switch

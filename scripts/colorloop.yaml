@@ -1,7 +1,7 @@
 sequence:
 - service: light.turn_on
   data:
-    entity_id: light.lightstrip4
+    entity_id: light.lightstrip1
     effect: colorloop
-    brightness: 254
-    transition: 5
+    brightness: 255
+    transition: 900

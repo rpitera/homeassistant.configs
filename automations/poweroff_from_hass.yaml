@@ -1,0 +1,8 @@
+- alias: "Powered off from HASS"
+  trigger:
+    platform: state
+    entity_id: input_select.living_room_tv
+    to: 'Powered Off'
+  action:
+    service: script.turn_on
+    entity_id: script.tv_off

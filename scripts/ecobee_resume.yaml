@@ -1,0 +1,7 @@
+sequence:
+- service: climate.ecobee_resume_program
+  entity_id: climate.main_floor
+- service: tts.google_say
+  data:
+    entity_id: media_player.living_room_home
+    message: 'Environmental control returned to auto, Robert.'

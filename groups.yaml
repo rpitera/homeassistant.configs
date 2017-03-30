@@ -1,418 +1,624 @@
+#
+#  Views
+#
 default_view:
-  view: yes
+  view: true
   entities:
-   - updater.updater
-   - persistent_notification.invalid_config
-#   - group.weather
-   - group.forecast
-   - group.avg_temps
-   - group.perimiter
-   - group.ecobee
-   - group.people
-   - group.alarm_system
-   - group.traffic
-   - group.events
-   - camera.robert
-   - group.nest_protect_downstairs
-   - group.nest_protect_upstairs
+    - group.laundry
+    - group.forecast
+    - group.avg_temps
+    - group.perimiter
+    - group.outdoor_lighting
+    - group.motion_sensors
+    - group.ecobee
+    - group.presence
+    - group.alarm_system
+    - group.events
+    - group.almanac
+    - camera.robert
+    - group.ring
+    - group.traffic_info
 
 cameras:
   name: Cameras
-  view: yes
+  view: true
   entities:
-   - camera.front_outside_house
-   - camera.front_outside_house_alt
-   - camera.front_of_house
-   - camera.rear_of_house
+    - group.interior_cams
+    - group.exterior_cams
+    - group.camera_presets
 
 rooms:
   name: Rooms
-  view: yes
+  view: true
   entities:
-   - group.outside
-   - group.livingroom
-   - group.hallway
-   - group.office
-   - group.bedroom
-   - group.diningroom
-   - group.tearoom
-   - group.upstairs
-   - group.ecobee
-   - group.nest_protect_downstairs
-   - group.nest_protect_upstairs
+    - group.outside
+    - group.livingroom
+    - group.hallway
+    - group.office
+    - group.bedroom
+    - group.diningroom
+    - group.tearoom
+    - group.upstairs
+    - group.ecobee
+    - group.nest_protect_downstairs
+    - group.nest_protect_upstairs
 
 pws:
   name: Weather Station
-  view: yes
+  view: true
   entities:
-   - group.wunderground
-   - group.pws_alerts
-   - group.wxcameras
-   - group.weather_statistics
-   - group.forecast
+    - group.wunderground
+    - group.wxcameras
+    - group.weather_statistics
+    - group.yweather
+    - group.aqi
 
 media:
   name: Media Room
-  view: yes
+  view: true
   entities:
-   - group.mediaplayers
-   - group.mediaswitches
-   - group.plex_activity
+    - group.mediaplayers
+    - media_player.media_center
+    - group.remote
+    - group.plex_activity
+    - group.internet_radio
 
 system:
   name: System Status
-  view: yes
+  view: true
   entities:
-   - group.internet
-   - group.wink_status
-   - group.ha_status
-   - group.system_status
-   - group.local_devices
-
+    - group.links
+    - group.internet
+    - group.wink_devices
+    - group.ha_status
+    - group.system_status
+    - group.local_devices
+   
 automation:
   name: Automation
-  view: yes
+  view: true
   entities:
-   - group.scenes
-   - group.inputs
-   - group.all_automations
-   - group.all_scripts
-   - group.weather
+    - group.scenes
+    - group.inputs
+    - group.all_automations
+    - group.all_scripts
+    - group.weather
 
 zwave:
   name: ZWave
-  view: yes
+  view: true
   entities:
-   - group.aeotec_lr_sensor
-   - group.aeotec_br_sensor
-   - group.aeotec_smart_switch_1
-   - group.aeotec_smart_switch_2
-   - group.aeotec_smart_energy_switch
-   - group.garage
-
+    - group.aeotec_lr_sensor
+    - group.aeotec_br_sensor
+    - group.aeotec_smart_switch_1
+    - group.aeotec_smart_switch_2
+    - group.aeotec_smart_energy_switch
+    - group.garage
 
 #
 # Groups
 #
 weather:
+  name: weather
   entities:
-   - sensor.yr_symbol
-   - sensor.dark_sky_condition
-   - sensor.dark_sky_temperature
-   - sensor.dark_sky_apparent_temperature
-   - sensor.dark_sky_cloud_coverage
-   - sensor.dark_sky_humidity
-   - sensor.dark_sky_dew_point
-   - sensor.dark_sky_precip
-   - sensor.dark_sky_precip_type
-   - sensor.dark_sky_precip_probability
-   - sensor.dark_sky_precip_intensity
-   - sensor.dark_sky_pressure
-   - sensor.dark_sky_visibility
-   - sensor.dark_sky_nearest_storm_distance
-   - sensor.dark_sky_wind_bearing
-   - sensor.dark_sky_wind_speed
+    - sensor.dark_sky_summary
+    - sensor.dark_sky_condition
+    - sensor.dark_sky_temperature
+    - sensor.dark_sky_dew_point
+    - sensor.dark_sky_apparent_temperature
+    - sensor.dark_sky_cloud_coverage
+    - sensor.dark_sky_humidity
+    - sensor.dark_sky_pressure
+    - sensor.dark_sky_visibility
+    - sensor.dark_sky_wind_bearing
+    - sensor.dark_sky_wind_speed
+    - sensor.dark_sky_precip_probability
+    - sensor.dark_sky_precip
+    - sensor.dark_sky_precip_type
+    - sensor.dark_sky_precip_intensity
+    - sensor.dark_sky_nearest_storm_distance
+
 forecast:
-   - sensor.dark_sky_minutely_summary
-   - sensor.dark_sky_hourly_summary
-   - sensor.dark_sky_daily_summary
+  name: forecast
+  entities:
+    - sensor.dark_sky_minutely_summary
+    - sensor.dark_sky_hourly_summary
+    - sensor.dark_sky_daily_summary
+
 internet:
-   - sensor.speedtest_ping
-   - sensor.speedtest_download
-   - sensor.speedtest_upload
-   - sensor.update_speedtest
+  name: internet
+  entities:
+    - sensor.speedtest_ping
+    - sensor.speedtest_download
+    - sensor.speedtest_upload
+    - sensor.update_speedtest
+
+outdoor_lighting:
+  name: outdoor lighting
+  entities:
+    - light.front_door
+    - light.side_door
+    - light.garage
+    - light.landscape
+
+motion_sensors:
+  name: motion sensors
+  entities:
+    - binary_sensor.aeotec_multisensor_6_sensor_7_0
+    - binary_sensor.office_motion
+    - binary_sensor.aeotec_multisensor_6_sensor_8_0
+    - binary_sensor.tearoom_motion
+    - binary_sensor.second_floor_motion
+
 perimiter:
-   - lock.front_door
-   - light.front_door
-   - light.side_door
-   - light.garage
-   - light.landscape
-   - binary_sensor.vision_zg8101_garage_door_detector_sensor_12_0
-   - binary_sensor.mailbox
-   - binary_sensor.aeotec_multisensor_6_sensor_7_0
-   - binary_sensor.office_motion
-   - binary_sensor.aeotec_multisensor_6_sensor_8_0
-   - binary_sensor.tearoom_motion
-   - binary_sensor.front_door
-   - binary_sensor.kitchen_entry
-   - binary_sensor.side_door
-   - binary_sensor.tea_room_slider
-   - binary_sensor.dining_room_1
-   - binary_sensor.dining_room_2
-   - binary_sensor.second_floor
+  name: perimiter
+  entities:
+    - lock.front_door
+    - binary_sensor.vision_zg8101_garage_door_detector_sensor_12_0
+    - binary_sensor.mailbox_opened
+    - binary_sensor.front_door_opened
+    - binary_sensor.kitchen_entry_opened
+    - binary_sensor.side_door_opened
+    - binary_sensor.tea_room_slider_opened
+    - binary_sensor.dining_room_1_opened
+    - binary_sensor.dining_room_2_opened
+
 bedroom:
-   - binary_sensor.aeotec_multisensor_6_sensor_8_0
-   - sensor.aeotec_multisensor_6_temperature_8_1
-   - light.lightstrip1
-   - light.bedroom_left
-   - light.bedroom_right
+  name: bedroom
+  entities:
+    - binary_sensor.aeotec_multisensor_6_sensor_8_0
+    - sensor.aeotec_multisensor_6_temperature_8_1
+    - light.lightstrip1
+    - light.bedroom_left
+    - light.bedroom_right
+
 tearoom:
-   - binary_sensor.tearoom_motion
-   - sensor.tearoom_temperature
-   - light.tea_room_left
-   - light.tea_room_right
-   - switch.aeotec_smart_energy_switch_switch_9_0
+  name: tea room
+  entities:
+    - binary_sensor.tearoom_motion
+    - sensor.tearoom_temperature
+    - light.tea_room_left
+    - light.tea_room_right
+    - switch.aeotec_smart_energy_switch_switch_9_0
+
 diningroom:
-   - light.dining_room
-   - binary_sensor.tea_room_slider
-   - binary_sensor.dining_room_1
-   - binary_sensor.dining_room_2
+  name: dining room
+  entities:
+    - light.dining_room
+    - binary_sensor.tea_room_slider_opened
+    - binary_sensor.dining_room_1_opened
+    - binary_sensor.dining_room_2_opened
+
 livingroom:
-   - binary_sensor.front_door
-   - binary_sensor.aeotec_multisensor_6_sensor_7_0
-   - sensor.aeotec_multisensor_6_temperature_7_1
-   - light.sconces
-   - light.lightstrip2
-   - light.lightstrip3
-   - light.lightstrip4
-   - light.tv_light_l
-   - light.tv_light_r
+  name: living room
+  entities:
+    - binary_sensor.front_door_opened
+    - binary_sensor.aeotec_multisensor_6_sensor_7_0
+    - sensor.aeotec_multisensor_6_temperature_7_1
+    - switch.outlet_1
+    - switch.outlet_2
+    - light.sconces
+    - light.lightstrip2
+    - light.lightstrip3
+    - light.lightstrip4
+    - light.tv_light_l
+    - light.tv_light_r
+
 hallway:
-   - switch.top_light_load
-   - binary_sensor.main_floor_occupancy
+  name: hallway
+  entities:
+    - switch.top_light_load
+    - binary_sensor.main_floor_occupancy
+
 office:
-   - binary_sensor.office_motion
-   - sensor.office_temperature
-   - switch.office
+  name: office
+  entities:
+    - binary_sensor.office_motion
+    - sensor.office_temperature
+    - switch.office
+
 upstairs:
-   - binary_sensor.second_floor_motion
-   - sensor.upstairs_temperature
-   - sensor.second_floor_temperature
-   - binary_sensor.upstairs_occupancy
+  name: second floor
+  entities:
+    - binary_sensor.second_floor_motion
+    - sensor.upstairs_temperature
+    - sensor.second_floor_temperature
+    - binary_sensor.upstairs_occupancy
+
 garage:
-   - binary_sensor.vision_zg8101_garage_door_detector_sensor_12_0
-   - light.garage
+  name: garage
+  entities:
+    - binary_sensor.vision_zg8101_garage_door_detector_sensor_12_0
+    - light.garage
+
 mediaplayers:
-   - media_player.my_afts
-   - media_player.my_afts_2
-   - media_player.plex
-   - media_player.office
-   - media_player.living_room
-   - media_player.bath
-   - media_player.living_room_home
+  name: mediaplayers
+  entities:
+    - media_player.bath
+    - media_player.bedroom
+    - media_player.kodi
+    - media_player.living_room_home
+    - media_player.living_room_tv
+    - media_player.office
+    - media_player.shield
+    - media_player.shield_2
+    - media_player.shield_3
+
 camera_group:
-   - camera.front_outside_house
-   - camera.front_outside_house_alt
-   - camera.front_of_house
-   - camera.rear_of_house
+  name: camera group
+  entities:
+    - camera.front_outside_house
+    - camera.front_outside_house_alt
+    - camera.front_of_house
+    - camera.rear_of_house
+
 wxcameras:
-   - camera.goes_east_sat
-   - camera.ny_metro_wx_radar
-   - camera.ny_metro_precip
+  name: wxcameras
+  entities:
+    - camera.goes_east_sat
+    - camera.ny_metro_wx_radar
+    - camera.ny_metro_precip
+
 ha_status:
-   - sensor.current_ha_version
-   - sensor.installed_version
-   - sensor.since_last_boot
-   - sensor.last_boot
-   - sensor.cpu_use
-   - sensor.memory_use_percent
-   - sensor.ram_free
+  name: ha status
+  entities:
+    - sensor.current_ha_version
+    - sensor.installed_version
+    - input_select.log_level
+
 system_status:
-   - sensor.rp1_disk_use
-   - sensor.rp1_disk_use_2
-   - sensor.rp1_disk_free
-   - sensor.rp1_ram_use
-   - sensor.rp1_ram_use_2
-   - sensor.rp1_ram_free
-   - sensor.rp1_swap_use_percent
-   - sensor.rp1_swap_use
-   - sensor.rp1_swap_use_2
-   - sensor.rp1_swap_free
-   - sensor.rp1_cpu_load
-   - sensor.rp1_thread
-   - sensor.rp1_total
-   - sensor.rp1_running
-   - sensor.rp1_sleeping
+  name: system status
+  entities:
+    - sensor.rp1_disk_use
+    - sensor.rp1_disk_use_2
+    - sensor.rp1_disk_free
+    - sensor.rp1_ram_use
+    - sensor.rp1_ram_use_2
+    - sensor.rp1_ram_free
+    - sensor.rp1_swap_use_percent
+    - sensor.rp1_swap_use
+    - sensor.rp1_swap_use_2
+    - sensor.rp1_swap_free
+    - sensor.rp1_cpu_load
+    - sensor.rp1_thread
+    - sensor.rp1_total
+    - sensor.rp1_running
+    - sensor.rp1_sleeping
+    - sensor.since_last_boot
+    - sensor.last_boot
+    - sensor.cpu_use
+    - sensor.memory_use_percent
+    - sensor.ram_free
+
 local_devices:
-   - sensor.epsonprinter
-   - sensor.brotherprinter
-   - sensor.zen
-   - sensor.satori
-   - sensor.nirvana
-   - sensor.acurite_wx
-   - sensor.ex3700
-people:
-   - device_tracker.rpitera_rpitera
-   - sensor.droid_battery
-   - proximity.home
-   - device_tracker.ford_fusion
-   - sensor.fusion_fuel
-   - binary_sensor.main_floor_occupancy
-   - binary_sensor.upstairs_occupancy
+  name: local devices
+  entities:
+    - sensor.epsonprinter
+    - sensor.brotherprinter
+    - sensor.zen
+    - sensor.satori
+    - sensor.nirvana
+    - sensor.acurite_wx
+    - sensor.ex3700
+
+presence:
+  name: presence
+  entities:
+    - device_tracker.rpitera_rpitera
+    - sensor.droid_battery
+    - proximity.home
+    - device_tracker.ford_fusion
+    - sensor.fusion_fuel
+    - binary_sensor.main_floor_occupancy
+    - binary_sensor.upstairs_occupancy
+
 wunderground:
-   - sensor.pws_alerts
-   - sensor.pws_weather
-   - sensor.pws_station_id
-   - sensor.pws_observation_time
-   - sensor.pws_location
-   - sensor.pws_elevation
-   - sensor.pws_temp_f
-   - sensor.pws_feelslike_f
-   - sensor.pws_dewpoint_f
-   - sensor.heat_index_f
-   - sensor.pws_uv
-   - sensor.pws_solarradiation
-   - sensor.pws_visibility_mi
-   - sensor.pws_relative_humidity
-   - sensor.pws_pressure_in
-   - sensor.pws_pressure_mb
-   - sensor.pws_pressure_trend
-   - sensor.pws_wind_degrees
-   - sensor.pws_wind_dir
-   - sensor.pws_wind_string
-   - sensor.pws_wind_mph
-   - sensor.pws_wind_gust_mph
-   - sensor.pws_precip_1hr_in
-   - sensor.pws_precip_today_in
-   - sensor.pws_precip_today_string
+  name: wunderground
+  entities:
+    - sensor.pws_alerts
+    - sensor.pws_weather
+    - sensor.pws_station_id
+    - sensor.pws_observation_time
+    - sensor.pws_location
+    - sensor.pws_elevation
+    - sensor.pws_temp_f
+    - sensor.pws_feelslike_f
+    - sensor.pws_dewpoint_f
+    - sensor.heat_index_f
+    - sensor.pws_uv
+    - sensor.pws_solarradiation
+    - sensor.pws_visibility_mi
+    - sensor.pws_relative_humidity
+    - sensor.pws_pressure_in
+    - sensor.pws_pressure_mb
+    - sensor.pws_pressure_trend
+    - sensor.pws_wind_degrees
+    - sensor.pws_wind_dir
+    - sensor.pws_wind_string
+    - sensor.pws_wind_mph
+    - sensor.pws_wind_gust_mph
+    - sensor.pws_precip_1hr_in
+    - sensor.pws_precip_today_in
+    - sensor.pws_precip_today_string
+
 nest_protect_downstairs:
-   - binary_sensor.downstairs_nest_protect_online
-   - sensor.downstairs_nest_protect_battery_health
-   - sensor.downstairs_nest_protect_co_status
-   - sensor.downstairs_nest_protect_smoke_status
-#   - binary_sensor.home_downstairs_nest_protect_co_detected
-#   - binary_sensor.home_downstairs_nest_protect_smoke_detected
+  name: nest protect main floor
+  entities:
+    - binary_sensor.downstairs_nest_protect_online
+    - sensor.downstairs_nest_protect_battery_health
+    - sensor.downstairs_nest_protect_co_status
+    - sensor.downstairs_nest_protect_smoke_status
 
 nest_protect_upstairs:
-   - binary_sensor.upstairs_nest_protect_online
-   - sensor.upstairs_nest_protect_battery_health
-   - sensor.upstairs_nest_protect_co_status
-   - sensor.upstairs_nest_protect_smoke_status
-#   - binary_sensor.home_upstairs_nest_protect_co_detected
-#   - binary_sensor.home_upstairs_nest_protect_smoke_detected
+  name: nest protect second floor
+  entities:
+    - binary_sensor.upstairs_nest_protect_online
+    - sensor.upstairs_nest_protect_battery_health
+    - sensor.upstairs_nest_protect_co_status
+    - sensor.upstairs_nest_protect_smoke_status
+
 alarm_system:
-   - alarm_control_panel.ha_alarm
+  name: alarm system
+  entities:
+    - alarm_control_panel.ha_alarm
+
 alarm_state:
-   - light.front_door
-   - binary_sensor.bedroom_motion
-   - binary_sensor.kitchen_entry
-   - binary_sensor.side_door
-   - light.side_door
-   - binary_sensor.tea_room_slider
-   - binary_sensor.dining_room_1
-   - binary_sensor.dining_room_2
-   - binary_sensor.second_floor
-traffic:
-   - sensor.commute_travel_time
-   - sensor.wilson_borough_travel_time
-   - sensor.sandy_hook_travel_time
-   - sensor.poconos_travel_time
+  name: alarm state
+  entities:
+    - light.front_door
+    - binary_sensor.bedroom_motion
+    - binary_sensor.kitchen_entry_opened
+    - binary_sensor.side_door_opened
+    - light.side_door
+    - binary_sensor.tea_room_slider_opened
+    - binary_sensor.dining_room_1_opened
+    - binary_sensor.dining_room_2_opened
+    - binary_sensor.second_floor_motion
+
+traffic_info:
+  name: traffic info
+  entities:
+    - sensor.ewr_travel_time
+    - sensor.bridgewater_area_travel_time
+    - sensor.wilson_borough_travel_time
+    - sensor.sandy_hook_travel_time
+    - sensor.poconos_travel_time
+
 scenes:
-   - scene.tv_time
-   - scene.sunset
-   - scene.sunset_dimmed
-   - scene.green_forest
-   - scene.deep_blue
-   - scene.landscape_colorloop
+  name: scenes
+  entities:
+    - scene.tv_time
+    - scene.sunset
+    - scene.sunset_dimmed
+    - scene.green_forest
+    - scene.deep_blue
+    - scene.landscape_colorloop
+
 inputs:
-   - input_boolean.sunup_switch
-   - input_boolean.sundown_switch
-   - input_boolean.mailbox_switch
-   - sensor.washer_pwrdn
-   - input_boolean.washer_switch
-   - sensor.dryer_pwrup
-   - input_boolean.dryer_switch
-mediaswitches:
-   - switch.watch_tv
-   - switch.firetvplex
-   - switch.chromecast
-   - switch.bluray
+  name: inputs
+  entities:
+    - input_boolean.sunup_switch
+    - input_boolean.sundown_switch
+    - input_boolean.mailbox_switch
+    - sensor.washer_pwrup
+    - input_boolean.washer_switch
+    - sensor.dryer_pwrup
+    - input_boolean.dryer_switch
+
+remote:
+  name: remote
+  entities:
+    - remote.living_room
+    - sensor.current_activity
+    - input_select.living_room_tv
+
 aeotec_lr_sensor:
-  name: Living Room
+  name: living room
   entities:
-   - binary_sensor.aeotec_multisensor_6_sensor_7_0
-   - sensor.aeotec_multisensor_6_burglar_7_10
-   - sensor.aeotec_multisensor_6_luminance_7_3
-   - sensor.aeotec_multisensor_6_relative_humidity_7_5
-   - sensor.aeotec_multisensor_6_temperature_7_1
+    - binary_sensor.aeotec_multisensor_6_sensor_7_0
+    - sensor.aeotec_multisensor_6_burglar_7_10
+    - sensor.aeotec_multisensor_6_luminance_7_3
+    - sensor.aeotec_multisensor_6_relative_humidity_7_5
+    - sensor.aeotec_multisensor_6_temperature_7_1
+
 aeotec_br_sensor:
-  name: Bed Room
+  name: bedroom
   entities:
-   - binary_sensor.aeotec_multisensor_6_sensor_8_0
-   - sensor.aeotec_multisensor_6_burglar_8_10
-   - sensor.aeotec_multisensor_6_luminance_8_3
-   - sensor.aeotec_multisensor_6_relative_humidity_8_5
-   - sensor.aeotec_multisensor_6_temperature_8_1
+    - binary_sensor.aeotec_multisensor_6_sensor_8_0
+    - sensor.aeotec_multisensor_6_burglar_8_10
+    - sensor.aeotec_multisensor_6_luminance_8_3
+    - sensor.aeotec_multisensor_6_relative_humidity_8_5
+    - sensor.aeotec_multisensor_6_temperature_8_1
+
 aeotec_smart_energy_switch:
-  name: Tea Room Fireplace
+  name: tea room fireplace
   entities:
-   - switch.aeotec_smart_energy_switch_switch_9_0
-   - sensor.aeotec_smart_energy_switch_voltage_9_15
-   - sensor.aeotec_smart_energy_switch_power_9_4
-   - sensor.aeotec_smart_energy_switch_previous_reading_9_1
+    - switch.aeotec_smart_energy_switch_switch_9_0
+    - sensor.aeotec_smart_energy_switch_voltage_9_15
+    - sensor.aeotec_smart_energy_switch_power_9_4
+    - sensor.aeotec_smart_energy_switch_previous_reading_9_1
+
 aeotec_smart_switch_1:
-  name: Washer
+  name: washer
   entities:
-   - switch.aeotec_smart_switch_6_switch_10_0
-   - sensor.aeotec_smart_switch_6_voltage_10_16
-   - sensor.aeotec_smart_switch_6_current_10_20
-   - sensor.aeotec_smart_switch_6_power_10_8
-   - sensor.aeotec_smart_switch_6_previous_reading_10_1
+    - switch.aeotec_smart_switch_6_switch_10_0
+    - sensor.aeotec_smart_switch_6_voltage_10_16
+    - sensor.aeotec_smart_switch_6_current_10_20
+    - sensor.aeotec_smart_switch_6_power_10_8
+    - sensor.aeotec_smart_switch_6_previous_reading_10_1
+
 aeotec_smart_switch_2:
-  name: Dryer
+  name: dryer
   entities:
-   - switch.aeotec_smart_switch_6_switch_11_0
-   - sensor.aeotec_smart_switch_6_voltage_11_16
-   - sensor.aeotec_smart_switch_6_current_11_20
-   - sensor.aeotec_smart_switch_6_power_11_8
-   - sensor.aeotec_smart_switch_6_previous_reading_11_1
+    - switch.aeotec_smart_switch_6_switch_11_0
+    - sensor.aeotec_smart_switch_6_voltage_11_16
+    - sensor.aeotec_smart_switch_6_current_11_20
+    - sensor.aeotec_smart_switch_6_power_11_8
+    - sensor.aeotec_smart_switch_6_previous_reading_11_1
+
 ecobee:
-   - sensor.operating_mode
-   - climate.main_floor
-   - sensor.main_floor_humidity
-   - sensor.main_floor_occupancy
-   - sensor.main_floor_temperature
-   - sensor.upstairs_occupancy
-   - sensor.upstairs_temperature
+  name: ecobee
+  entities:
+    - sensor.operating_mode
+    - script.ecobee_resume
+    - climate.main_floor
+    - sensor.main_floor_humidity
+    - sensor.main_floor_occupancy
+    - sensor.main_floor_temperature
+    - sensor.upstairs_occupancy
+    - sensor.upstairs_temperature
+
 outside:
-   - light.front_door
-   - light.side_door
-   - light.garage
-   - light.landscape
-   - binary_sensor.vision_zg8101_garage_door_detector_sensor_12_0
+  name: outside
+  entities:
+    - light.front_door
+    - light.side_door
+    - light.garage
+    - light.landscape
+    - binary_sensor.vision_zg8101_garage_door_detector_sensor_12_0
+
 br_lights:
-   - light.bedroom_left
-   - light.bedroom_right
+  name: br lights
+  entities:
+    - light.bedroom_left
+    - light.bedroom_right
+
 weather_statistics:
-   - binary_sensor.temperature_up
-   - binary_sensor.temperature_down
-   - binary_sensor.pressure_up
-   - binary_sensor.pressure_down
-   - binary_sensor.humidity_up
-   - binary_sensor.humidity_down
-   - binary_sensor.wind_speed_up
-   - binary_sensor.wind_speed_down
-   - binary_sensor.precip_up
-   - binary_sensor.precip_down
-   - sensor.temperature_stats_mean
-   - sensor.pws_wind_string
+  name: weather statistics
+  entities:
+    - binary_sensor.temperature_up
+    - binary_sensor.temperature_down
+    - binary_sensor.pressure_up
+    - binary_sensor.pressure_down
+    - binary_sensor.humidity_up
+    - binary_sensor.humidity_down
+    - binary_sensor.wind_speed_up
+    - binary_sensor.wind_speed_down
+    - binary_sensor.precip_up
+    - binary_sensor.precip_down
+    - sensor.temperature_stats_mean
+    - sensor.pws_wind_string
+
 avg_temps:
-  name: Average Home Temperature
+  name: environmental
   entities:
-   - sensor.average_main_temp
-   - sensor.average_upstairs_temp
-wink_status:
-  name: Wink System Status
-  entities:
-   - sensor.wink_core_api
-   - sensor.wink_hub_api
-   - sensor.winkcom
-   - sensor.tcp_integration
-   - sensor.echo_integration
+    - sensor.average_main_temp
+    - sensor.average_upstairs_temp
+
+
 plex_activity:
-  name: Plex Activity Status
+  name: plex activity status
   entities:
-   - sensor.nirvana_2
-pws_alerts:
-  name: Weather Warnings
-  entities:
-   - sensor.alert_description
-   - sensor.alert_expires
-   - sensor.alert_message
+    - sensor.nirvana_2
+
 events:
+  name: events
   entities:
-   - sensor.event_title
-   - sensor.event_description
-   - sensor.event_allday
-   - sensor.event_start
-   - sensor.event_end
+    - sensor.event_title
+    - sensor.event_description
+    - sensor.event_allday
+    - sensor.event_start
+    - sensor.event_end
+
+laundry:
+  name: laundry
+  entities:
+    - sensor.washer_pwrup
+    - sensor.dryer_pwrup
+
+interior_cams:
+  name: interior cams
+  entities:
+    - camera.interior_street_facing_controllable
+    - camera.rear_facing_controllable
+    - camera.interior_bedroom_fixed
+
+exterior_cams:
+  name: exterior cams
+  entities:
+    - camera.outside_front_left_fixed
+    - camera.outside_front_right_fixed
+
+wink_devices:
+  name: wink devices
+  entities:
+    - binary_sensor.main_hub
+    - binary_sensor.wink_relay
+    - binary_sensor.philips_hue
+
+almanac:
+  name: almanac
+  entities:
+    - sun.sun
+    - sensor.nextsunrise
+    - sensor.nextsunset
+    - sensor.moon
+    - sensor.dayofyear
+    - sensor.weekofyear
+
+aqi:
+  name: air quality index
+  entities:  
+    - sensor.waqi_rahway_pm_newjersey
+    - sensor.dark_sky_ozone
+
+camera_presets:
+  name: camera presets
+  entities:
+    - script.f_ir_off
+    - input_select.camera1
+    - input_select.camera2
+
+ring:
+  name: ring doorbell
+  entities:
+    - binary_sensor.front_door_button_pressed
+    - binary_sensor.front_door_motion
+    - sensor.ring_first_floor_volume
+    - sensor.ring_front_door_last_activity
+    - sensor.ring_front_door_motion_sensor
+    - sensor.ring_front_door_volume
+    - sensor.ring_front_door_battery
+
+internet_radio:
+  name: internet radio
+  entities:
+    - input_select.radio_station
+    - input_select.chromecast_radio
+    - script.radio538
+    - input_slider.volume_radio
+
+links:
+  name: management interfaces
+  entities:
+    - weblink.webmin
+    - weblink.router
+    - weblink.phpmyadmin
+    - weblink.kodi_interface
+    - weblink.plex_interface
+
+yweather:
+  name: three day forecast
+  entities:
+    - sensor.day1_condition
+    - sensor.day1_temperature_max
+    - sensor.day1_temperature_min
+    - sensor.day2_condition
+    - sensor.day2_temperature_max
+    - sensor.day2_temperature_min
+    - sensor.day3_condition
+    - sensor.day3_temperature_max
+    - sensor.day3_temperature_min    
+
+    
+
+
+
+#wink_status:
+#  name: Wink System Status
+#  entities:
+#    - sensor.wink_core_api
+#    - sensor.wink_hub_api
+#    - sensor.winkcom
+#   - sensor.tcp_integration
+#    - sensor.echo_integration

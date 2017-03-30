@@ -1,0 +1,25 @@
+# Washer Notification Sequence Done
+- alias: 'Washer Done - home'
+  trigger:
+    platform: state
+    entity_id: sensor.washer_pwrup
+    from: 'True'
+    to: 'False'
+    for:
+      minutes: 3
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: input_boolean.washer_switch
+        state: 'on'
+      - condition: state
+        entity_id: device_tracker.rpitera_rpitera
+        state: 'home'
+  action:
+    - service: tts.google_say
+      entity_id: media_player.living_room_home
+      data:
+        message: 'The washer is done Robert.'
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.washer_switch

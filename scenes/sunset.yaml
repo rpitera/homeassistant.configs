@@ -1,0 +1,29 @@
+- name: Sunset
+  entities:
+    light.lightstrip4:
+        state: on
+        transition: 2
+        brightness: 254
+        xy_color: [ 0.5384, 0.445 ]
+    light.lightstrip2:
+        state: on
+        transition: 2
+        brightness: 251
+        xy_color: [ 0.5493, 0.4351 ]
+    light.lightstrip3:
+        state: on
+        transition: 2
+        brightness: 254
+        xy_color: [ 0.6168, 0.3737 ]
+    light.tv_light_l:
+        state: on
+        transition: 2
+        brightness: 236
+        color_temp: 500
+        xy_color: [ 0.6735, 0.322 ]
+    light.tv_light_r:
+        state: on
+        transition: 2
+        brightness: 236
+        color_temp: 500
+        xy_color: [ 0.6735, 0.322 ]

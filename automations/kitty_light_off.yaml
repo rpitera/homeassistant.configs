@@ -1,0 +1,10 @@
+# Turn on Spirit's light after sunset and then turn off at 11:00 PM
+- alias: 'Kitty Light Off'
+  trigger:
+    platform: time
+    after: '23:00'
+  action:
+    service: light.turn_off
+    data_template:
+      entity_id: light.dining_room
+      

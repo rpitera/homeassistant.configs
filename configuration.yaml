@@ -1,7 +1,12 @@
+####################################################
+#                                                  #
+#                   Base Config                    #
+#                                                  #
+####################################################
 homeassistant:
   name: Home
-  latitude: 40.658939
-  longitude: -74.39030385
+  latitude: !secret lat
+  longitude: !secret long
   elevation: 52
   unit_system: imperial
   time_zone: America/New_York
@@ -20,17 +25,66 @@ http:
 ####################################################
 logger:
   default: error
+  logs:
+    homeassistant.components.media_player.firetv: fatal
+    homeassistant.components.media_player.cast: fatal
+    homeassistant.components.cameras: fatal
+    homeassistant.components.wink: critical
+    homeassistant.components.sensor.darksky: info
 frontend:
 history:
+  include:
+    domains:
+      - alarm_control_panel
+      - automation
+      - binary_sensor
+      - climate
+      - lock
+      - sensor
+      - switch
+      - media_player
+  exclude:
+    entities:
+     - sensor.last_boot
+     - sensor.date
 discovery:
 sun:
 logbook:
-#updater:
-  #reporting: true
+  include:
+    domains:
+      - alarm_control_panel
+      - automation
+      - binary_sensor
+      - climate
+      - lock
+      - sensor
+      - switch
+      - media_player
+  exclude:
+    entities:
+     - sensor.last_boot
+     - sensor.date
+updater:
+  reporting: false
 recorder:
-  # Delete events and states older than 2 weeks
-  purge_days: 14
+  # Delete events and states older than 1 weeks
+  purge_days: 7
   db_url: !secret db_url
+  include:
+    domains:
+      - alarm_control_panel
+      - automation
+      - binary_sensor
+      - climate
+      - lock
+      - sensor
+      - switch
+      - media_player
+  exclude:
+    entities:
+     - sensor.last_boot
+     - sensor.date
+config:
 
 ####################################################
 #                                                  #
@@ -40,15 +94,24 @@ recorder:
 zone: !include zones.yaml
 group: !include groups.yaml
 sensor: !include devices/sensors.yaml
+binary_sensor: !include devices/binary_sensors.yaml
 camera: !include devices/cameras.yaml
-script: !include scripts.yaml
-scene: !include scenes.yaml
-automation: !include automation.yaml
-input_boolean: !include input_boolean.yaml
-switch: !include switches.yaml
+script: !include_dir_named scripts
+scene: !include_dir_merge_list scenes
+automation: !include_dir_merge_list automations
+input_boolean: !include devices/input_booleans.yaml
+shell_command: !include shell_commands.yaml
+input_select: !include devices/input_selects.yaml
+media_player: !include devices/media_players.yaml
+device_tracker: !include device_trackers.yaml
+####################################################
+#                                                  #
+#                Platforms and APIs                #
+#                                                  #
+####################################################
 #
 #
-# ecobee Thermostat
+# ecobee API
 #
 ecobee:
   api_key: !secret ecobee_api_key
@@ -67,6 +130,7 @@ wink:
 light:
   platform: hue
   host: 192.168.1.151
+  scan_interval: 10
   allow_unreachable: true
   filename: phue.conf
 #
@@ -88,53 +152,22 @@ zwave:
   usb_path: /dev/ttyACM0
   config_path: /srv/hass/hass_venv/lib/python3.4/site-packages/libopenzwave-0.3.1-py3.4-linux-armv7l.egg/config
   polling_interval: 60000
-  customize:
-    binary_sensor.aeotec_multisensor_6_sensor_7_0:
-        polling_intensity: 1
-    binary_sensor.aeotec_multisensor_6_sensor_8_0:
-        polling_intensity: 1
-#
-# TTS Settings
-#
-tts:
-  - platform: google
-    language: 'en-uk'
+  device_config: !include zwave_device_config.yaml
+  
+  #Removed for update to 0.40.x
+  #customize:
+  #  binary_sensor.aeotec_multisensor_6_sensor_7_0:
+  #      polling_intensity: 1
+  #  binary_sensor.aeotec_multisensor_6_sensor_8_0:
+  #      polling_intensity: 1
+
 
 #
-# Media Players
+# Proximity
 #
-media_player:
-  platform: plex
-#
-media_player 2:
-  platform: cast
-#  host: 192.168.1.158
-#
-#media_player 3:
-#  platform: cast
-#  host: 192.168.1.157
-#
-media_player 3:
-  platform: firetv
-#
-# Presence Detection/Location
-#
-device_tracker:
-  - platform: nmap_tracker
-    hosts: 192.168.1.1/24
-    home_interval: 5
-  - platform: owntracks
-    max_gps_accuracy: 100
-  - platform: automatic
-    client_id: !secret automatic_client_id
-    secret: !secret automatic_secret
-    username: !secret automatic_user
-    password: !secret automatic_PW
 
 proximity:
   home:
-    ignored_zones:
-      - NPS
     devices:
       - device_tracker.rpitera_rpitera
       - device_tracker.ford_fusion
@@ -148,6 +181,7 @@ mqtt:
   port: 17070
   username: !secret cloudmqtt_username
   password: !secret cloudmqtt_password
+
 #
 # Notification
 #
@@ -161,6 +195,16 @@ notify:
     name: HTML5
     gcm_api_key: !secret gcm_api_key
     gcm_sender_id: !secret gcm_sender_id
+  - platform: kodi
+    name: kodi
+    host: http://192.168.1.248
+#
+# TTS Settings
+#
+tts:
+  - platform: google
+    language: 'en-uk'
+
 #
 #
 #  Alarm Control Panel
@@ -172,12 +216,12 @@ alarm_control_panel:
   code: !secret alarm_code
   pending_time: 60
   trigger_time: 60
-#
-#
-#  Shell Commands
-#
-shell_command:
-  backup_configs: 'sudo tar -zcvf homeassistant_backup.gz $( find -name "*.yaml" )'
+
+####################################################
+#                                                  #
+#             Platform Integrations                #
+#                                                  #
+####################################################
 #
 #
 # Alexa Integration
@@ -204,53 +248,6 @@ alexa:
           {% endif %}
 
 
-
-#
-#   Statistical Sensors
-#
-#
-binary_sensor:
-  platform: trend
-  entity_namespace: wx
-  sensors:
-    temperature_up:
-      friendly_name: 'Apparent Temp Rising'
-      entity_id: sensor.pws_feelslike_f
-      sensor_class: heat
-    temperature_down:
-      friendly_name: 'Apparent Temp Falling'
-      entity_id: sensor.pws_feelslike_f
-      sensor_class: cold
-      invert: Yes
-    pressure_up:
-      friendly_name: 'Barometric Pressure Rising'
-      entity_id: sensor.pws_pressure_in
-    pressure_down:
-      friendly_name: 'Barometric Pressure Falling'
-      entity_id: sensor.pws_pressure_in
-      invert: Yes
-    humidity_up:
-      friendly_name: 'Relative Humidity Rising'
-      entity_id: sensor.dark_sky_humidity
-    humidity_down:
-      friendly_name: 'Relative Humidity Falling'
-      entity_id: sensor.dark_sky_humidity
-      invert: Yes
-    wind_speed_up:
-      friendly_name: 'Sustained Wind Speed Increasing'
-      entity_id: sensor.pws_wind_mph
-    wind_speed_down:
-      friendly_name: 'Sustained Wind Speed Decreasing'
-      entity_id: sensor.pws_wind_mph
-      invert: Yes
-    precip_up:
-      friendly_name: 'Probability of Precip Increasing'
-      entity_id: sensor.dark_sky_precip_probability
-    precip_down:
-      friendly_name: 'Probability of Precip Decreasing'
-      entity_id: sensor.dark_sky_precip_probability
-      invert: Yes
-
 #
 #
 # Google Calendar Integration
@@ -263,9 +260,59 @@ google:
 #
 # Harmony Hub Integration
 #
-
 remote:
   - platform: harmony
     name: Living Room
     host: 192.168.1.172
-  
+
+#
+#
+# Configurator Integration
+#
+panel_iframe:
+  configurator:
+    title: Editor
+    icon: mdi:wrench
+    url: https://westofeast.no-ip.org:3218
+
+#
+#
+# Web Links for admin
+#
+weblink:
+  entities:
+    - name: Webmin
+      url: https://westofeast.no-ip.org:10000
+      icon: mdi:settings-box
+    - name: Router
+      url: http://192.168.1.1/
+      icon: mdi:router-wireless
+    - name: phpMyAdmin
+      url: http://192.168.1.181/phpmyadmin
+      icon: mdi:database
+    - name: Kodi Interface
+      url: http://192.168.1.248:8080
+      icon: mdi:kodi
+    - name: Plex Interface
+      url: http://plex.tv
+      icon: mdi:plex
+
+#
+#
+# FFMPEG Integration
+#
+ffmpeg:
+  ffmpeg_bin: /usr/bin/ffmpeg
+
+
+#
+#
+# Input Slider for Internet Radio
+#
+input_slider:
+  volume_radio:
+    name: Volume
+    icon: mdi:volume-high
+    min: 0
+    max: 1
+    step: 0.05

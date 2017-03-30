@@ -4,19 +4,19 @@
 - name: Somerset Shopping Center
   latitude: 40.577232
   longitude: -74.627472
-  radius: 25
+  radius: 50
   icon: mdi:store
 
 - name: Watchung Shopping Center
   latitude: 40.639901
   longitude: -74.423001
-  radius: 25
+  radius: 50
   icon: mdi:store
   
 - name: Blue Star Shopping Center
   latitude: 40.6511783
   longitude: -74.4087588
-  radius: 25
+  radius: 50
   icon: mdi:cart-outline
 
 - name: Wilson Borough

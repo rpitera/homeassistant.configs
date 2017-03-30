@@ -1,0 +1,14 @@
+# Works with Mail Alert routines, sets flag to prevent new notification
+# when retrieving the mail
+- alias: 'Mail Retrieval'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.mailbox_opened
+    from: 'off'
+  condition:
+    condition: state
+    entity_id: input_boolean.mailbox_switch
+    state: 'on'
+  action:
+    service: input_boolean.turn_off
+    entity_id: input_boolean.mailbox_switch

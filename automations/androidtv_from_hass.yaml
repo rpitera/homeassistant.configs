@@ -1,0 +1,8 @@
+- alias: "Android TV started from HASS"
+  trigger:
+    platform: state
+    entity_id: input_select.living_room_tv
+    to: 'AndroidTV'
+  action:
+    service: script.turn_on
+    entity_id: script.androidtv

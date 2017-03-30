@@ -1,0 +1,3 @@
+sequence:
+- service: shell_command.ir_off
+

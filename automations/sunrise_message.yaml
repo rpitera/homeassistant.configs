@@ -1,0 +1,12 @@
+#- alias: 'Sunrise message'
+#  trigger:
+#    platform: sun
+#    event: sunrise
+#  condition:
+#    condition: state
+#    entity_id: input_boolean.sunup_switch
+#    state: 'on'
+#  action:
+#    service: notify.ecobee
+#    data:
+#      message: 'The sun is up Robert. Hope you have a good day'

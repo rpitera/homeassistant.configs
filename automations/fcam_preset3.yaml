@@ -1,0 +1,8 @@
+- alias: "Front Cam Preset 3"
+  trigger:
+    platform: state
+    entity_id: input_select.camera1
+    to: 'front walk'
+  action:
+    service: script.turn_on
+    entity_id: script.f_preset3

@@ -1,0 +1,14 @@
+# Fan Assisted Heat - On
+- alias: 'Heat Pump On'
+  trigger:
+    platform: state
+    entity_id: sensor.operating_mode
+    from: 'idle'
+    to: 'heat'
+  condition:
+    condition: state
+    entity_id: device_tracker.rpitera_rpitera
+    state: 'home'
+  action:
+    - service: switch.turn_on
+      entity_id: switch.outlet_1

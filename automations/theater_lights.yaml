@@ -1,0 +1,16 @@
+# Set lighting for theater experience after it gets dim in the living room
+- alias: 'Theater Lights'
+  trigger:
+    - platform: state
+      entity_id: remote.living_room
+      from: 'off'
+  condition:
+    condition: sun
+    after: sunset
+    after_offset: "-00:45:00"
+  action:
+    - service: scene.turn_on
+      entity_id: scene.sunset
+    - delay: 00:02:00
+    - service: scene.turn_on
+      entity_id: scene.sunset_dimmed
