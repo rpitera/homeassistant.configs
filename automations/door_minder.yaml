@@ -9,13 +9,13 @@
     condition: or
     conditions:
       - condition: state
-        entity_id: binary_sensor.front_door_opened
+        entity_id: binary_sensor.front_entry_opened
         state: 'on'
       - condition: state
-        entity_id: binary_sensor.side_door_opened
+        entity_id: binary_sensor.side_entry_opened
         state: 'on'
   action:
     service: notify.pushbullet
     data_template:
       message: >
-        Robert, you left one of the entry doors open. Front Door is {{ states.binary_sensor.front_door.state }}.  Side Door is {{ states.binary_sensor.side_door.state }}.
+        Robert, you left one of the entry doors open. Front Door is {{ states.binary_sensor.front_entry_opened.state }}.  Side Door is {{ states.binary_sensor.side_entry_opened.state }}.

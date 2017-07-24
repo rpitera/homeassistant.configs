@@ -45,10 +45,13 @@
        entity_id: sensor.dark_sky_precip_probability
        invert: Yes
 
-# -  platform: ring
-#    username: !secret ring_username
-#    password: !secret ring_password
-#    entity_namespace: 'ring'
-#    monitored_conditions:
-#      - ding
-#      - motion
+-  platform: ring
+   entity_namespace: 'ring'
+   monitored_conditions:
+     - ding
+     - motion
+
+-  platform: octoprint
+   monitored_conditions:
+     - Printing
+     - Printing Error

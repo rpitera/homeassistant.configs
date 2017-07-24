@@ -1,15 +1,17 @@
-          >
-          {{ [
-          "OK Rob", 
-          "Sure thing Robert", 
-          "My Pleasure Rob",
-          "Done Rob",
-          "No worries Robert",
-          "I'll be glad to",
-          "Leave it to me",
-          "Consider it done",
-          "As you wish",
-          "By your command",
-          "Affirmative",
-          "No Problem Rob!"
-          ] | random }}
+>
+  {%- set responses = [
+  "OK Rob", 
+  "Sure thing Robert", 
+  "My Pleasure Rob",
+  "Done Rob",
+  "No worries Robert",
+  "I'll be glad to",
+  "Leave it to me",
+  "Consider it done",
+  "As you wish",
+  "By your command",
+  "Affirmative",
+  "No Problem Rob!"
+  ] -%}
+  {% set rindex =  (range(0, (responses | length - 1) )|random) -%}
+  {{responses[rindex]}}

@@ -1,0 +1,8 @@
+- alias: "Bedroom Chromecast started from HASS"
+  trigger:
+    platform: state
+    entity_id: input_select.bedroom_tv
+    to: 'Chromecast'
+  action:
+    service: script.turn_on
+    entity_id: script.chromecast

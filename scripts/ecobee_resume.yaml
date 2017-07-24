@@ -4,4 +4,4 @@ sequence:
 - service: tts.google_say
   data:
     entity_id: media_player.living_room_home
-    message: 'Environmental control returned to auto, Robert.'
+    message: 'Environmental control returned to auto!'

@@ -6,9 +6,10 @@
 #
 # Sensors
 #
-# test
 #
-# DarkSky.io
+# DarkSky.io Customizations
+#
+#
  sensor.dark_sky_cloud_coverage:
    friendly_name: Cloud Coverage
    icon: mdi:cloud-outline
@@ -53,8 +54,22 @@
  sensor.dark_sky_dew_point:
    friendly_name: Dew Point
    icon: mdi:oil-temperature
+
 #
-#  WeatherUnderground Customizations
+#  DarkSky Forecast Summaries
+#
+ sensor.dark_sky_daily_summary:
+   friendly_name: This week
+   icon: mdi:calendar-check
+ sensor.dark_sky_hourly_summary:
+   friendly_name: Today
+   icon: mdi:calendar-today
+ sensor.dark_sky_minutely_summary:
+   friendly_name: Next Hour
+   icon: mdi:alarm
+
+#
+#  Weather Underground Customizations
 #
  sensor.pws_weather:
    friendly_name: Current Conditions
@@ -110,7 +125,7 @@
    friendly_name: Pressure Trend
    icon: mdi:trending-neutral
 #
-# Farenheit/Imperial
+# WU Farenheit Measurements
 #
  sensor.pws_dewpoint_f:
    friendly_name: Dew Point F
@@ -147,19 +162,6 @@
    icon: mdi:nature
 
 #
-#  Forecast Summaries
-#
- sensor.dark_sky_daily_summary:
-   friendly_name: This week
-   icon: mdi:calendar-check
- sensor.dark_sky_hourly_summary:
-   friendly_name: Today
-   icon: mdi:calendar-today
- sensor.dark_sky_minutely_summary:
-   friendly_name: Next Hour
-   icon: mdi:alarm
-
-#
 #  Yahoo Weather Forecast Summaries
 #
 
@@ -181,10 +183,6 @@
    friendly_name: High
  sensor.day3_temperature_min:
    friendly_name: Low   
-
-
-
-
 
 #
 #  Weather Statistical Sensors
@@ -221,6 +219,7 @@
    icon: mdi:download
  sensor.speedtest_upload:
    icon: mdi:upload
+
 #
 # Glances sensors
 #
@@ -269,11 +268,30 @@
  sensor.rp1_sleeping:
    friendly_name: Tasks Sleeping/Inactive
    icon: mdi:hotel
+
+#
+# OctoPrint Sensors
+#
+ sensor.hotend:
+   icon: mdi:thermometer-lines
+ sensor.bed:
+   icon: mdi:thermometer-lines
+ sensor.hotend_target:
+   icon: mdi:target
+ sensor.bed_target:
+   icon: mdi:target
+ sensor.octoprint_current_state:
+   icon: mdi:printer-3d
+ sensor.octoprint_job_percentage:
+   icon: mdi:download
+
+
+
 #
 # Local Devices
 #
  sensor.epsonprinter:
-   friendly_name: Epson Artisan Printer
+   friendly_name: Epson WF-3620 Printer
    icon: mdi:printer
  sensor.brotherprinter:
    friendly_name: Brother Laser Printer
@@ -282,7 +300,7 @@
    friendly_name: ZEN - Win10 Primary Desktop
    icon: mdi:desktop-tower
  sensor.satori:
-   friendly_name: SATORI - Win10 Dev/Torrent Host
+   friendly_name: SATORI - Win10 Dev/Octoprint Host
    icon: mdi:desktop-tower
  sensor.nirvana:
    friendly_name: NIRVANA - Win10 Plex Host
@@ -300,8 +318,8 @@
 
 # Switches
  switch.aeotec_smart_energy_switch_switch_9_0:
-  friendly_name: Fireplace
-  icon: mdi:fire
+  friendly_name: Office AC
+  icon: mdi:air-conditioner
  switch.aeotec_smart_switch_6_switch_10_0:
   friendly_name: Washer Power Switch
   entity_picture: /local/washer.png
@@ -407,10 +425,10 @@
  binary_sensor.dining_room_2_opened:
    friendly_name: Dining Room Window 2
    icon: mdi:window-closed
- binary_sensor.front_door_opened:
+ binary_sensor.front_entry_opened:
    friendly_name: Front Door
    icon: mdi:cellphone
- binary_sensor.side_door_opened:
+ binary_sensor.side_entry_opened:
    friendly_name: Side Door
    icon: mdi:cellphone
  binary_sensor.kitchen_entry_opened:
@@ -455,6 +473,12 @@
 #
  sensor.ewr_travel_time:
    icon: mdi:airplane
+ sensor.westfield_travel_time:
+   icon: mdi:cart
+ sensor.garwood_travel_time:
+   icon: mdi:cart
+ sensor.bound_brook_travel_time:
+   icon: mdi:cart
  sensor.bridgewater_area_travel_time:
    icon: mdi:cart
  sensor.sandy_hook_travel_time:
@@ -482,17 +506,6 @@
  sensor.event_end:
    friendly_name: End Time
    icon: mdi:clock-end
-
-#
-# Media Players
-#
-# media_player.shield:
-#   friendly_name: Shield Plex
-# media_player.shield_2:
-#   friendly_name: Shield Cast   
-# media_player.shield_3:
-#   friendly_name: Shield Plexdevices  
-
 
 
 #
@@ -533,10 +546,10 @@
  light.landscape:
    friendly_name: Landscaping Lights
  switch.outlet_1:
-   friendly_name: Pivot Power Outlet 1 (Fan)
+   friendly_name: Fan
    icon: mdi:fan
  switch.outlet_2:
-   friendly_name: Pivot Power Outlet 2 (Plant Light)
+   friendly_name: Plant Uplight
    icon: mdi:leaf
  script.radio538:
    friendly_name: Start Playing
@@ -547,14 +560,16 @@
  input_select.log_level:
    friendly_name: Logger Level
    icon: mdi:sort
+ switch.valve:
+   friendly_name: Water Main Valve
+   icon: mdi:water-pump
+
 
 #
 # Misc. Sensors
 #
- sensor.yr_symbol:
-   friendly_name: Current Conditions
  sensor.droid_battery:
-   friendly_name: Droid Battery Level %
+   friendly_name: Nexus 6P Battery Level %
    icon: mdi:battery
  sensor.fusion_fuel:
    friendly_name: Fuel Remaining
@@ -590,7 +605,15 @@
    friendly_name: Doorbell Press
  binary_sensor.ring_front_door_motion:
    friendly_name: Doorbell Motion
-
+ sensor.current_activity:
+   icon: mdi:run
+ sensor.current_activity_br:
+   icon: mdi:run
+ sensor.ssl_cert_expiration:
+   icon: mdi:certificate 
+ binary_sensor.laundry_room_liquid_detected:
+   friendly_name: Laundry Room Leak Sensor
+   icon: mdi:water-percent
 
 
 
@@ -635,7 +658,33 @@
  group.camera_presets:
    friendly_name: camera presets
    control: hidden
- 
+
+#
+#
+#  ZWave Device Group
+#
+#
+
+ zwave.aeotec_zstick_gen5_1:
+   entity_picture: /local/zwave.png 
+ zwave.aeotec_multisensor_6_7:
+   entity_picture: /local/zwave.png
+   friendly_name: Aeotec MS 6 Living Room
+ zwave.aeotec_multisensor_6_8:
+   entity_picture: /local/zwave.png
+   friendly_name: Aeotec MS 6 Bedroom
+ zwave.aeotec_smart_energy_switch_9:
+   entity_picture: /local/zwave.png
+ zwave.aeotec_smart_switch_6_10:
+   entity_picture: /local/zwave.png
+   friendly_name: Aeotec SS 6 Washer
+ zwave.aeotec_smart_switch_6_11:
+   entity_picture: /local/zwave.png
+   friendly_name: Aeotec SS 6 Dryer
+ zwave.vision_zg8101_garage_door_detector_12:
+   entity_picture: /local/zwave.png
+
+
 
 
 #
@@ -705,6 +754,7 @@
    icon: mdi:calendar-range
  sensor.moon:
    unit_of_measurement:  
+
 #
 #
 #  Ring Sensors
@@ -714,12 +764,17 @@
    friendly_name: Chime Volume
  sensor.ring_front_door_battery:
    friendly_name: Ring Battery Level
- sensor.ring_front_door_last_activity:
-   friendly_name: Last Acitvity
+ sensor.ring_last_activity:
+   icon: mdi:timer
+ sensor.ring_last_ding:
+   icon: mdi:timer
+ sensor.ring_last_motion:
+   icon: mdi:timer
  sensor.ring_front_door_motion_sensor:
    friendly_name: Motion Sensor
  sensor.ring_front_door_volume:
    friendly_name: Ring Volume 
+
 
 #
 #
@@ -738,26 +793,25 @@
    friendly_name: Uplight Left
  light.tv_light_r:
    friendly_name: Uplight Right
+
+
+ input_slider.epson25e37c_black:
+   entity_picture: /local/black.png
+ input_slider.epson25e37c_cyan:
+   entity_picture: /local/cyan.png
+ input_slider.epson25e37c_magenta:
+   entity_picture: /local/magenta.png
+ input_slider.epson25e37c_yellow:
+   entity_picture: /local/yellow.png
+
 #
 #
-#  Hidden Items  (Also takes care of multiple Hue light entries
-#  between Hue and Wink hubs)
+#  Hidden Items  
 #
 #
- switch.siren__strobe:
-   hidden: true
- light.lightstrip1_2:
-   hidden: true
- light.lightstrip2_2:
-   hidden: true
- light.lightstrip3_2:
-   hidden: true
- light.lightstrip4_2:
-   hidden: true
- light.tv_light_l_2:
-   hidden: true
- light.tv_light_r_2:
-   hidden: true
+ # switch.siren__strobe:
+ #   hidden: true
+ 
 
 
 

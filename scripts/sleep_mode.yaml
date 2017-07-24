@@ -1,0 +1,27 @@
+sequence:
+
+- service: lock.lock
+  entity_id: lock.front_door
+
+- service: remote.turn_off
+  entity_id: remote.living_room
+
+- service: homeassistant.turn_off
+  entity_id: group.all_lights
+
+- service: homeassistant.turn_off
+  entity_id: group.night_switches
+
+- service: light.turn_off
+  entity_id: light.landscape
+
+- service: light.turn_on
+  entity_id: light.lightstrip1
+
+- service: climate.ecobee_resume_program
+  entity_id: climate.main_floor
+
+- service: tts.google_say
+  data:
+    entity_id: media_player.living_room_home
+    message: 'All commands complete.  Goodnight, Rob.'

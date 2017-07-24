@@ -1,8 +1,9 @@
-# Turn on Spirit's light after sunset and then turn off at 11:00 PM
+# Turn on Spirit's light just before sunset - updated 7/18/17
 - alias: 'Kitty Light On'
   trigger:
     platform: sun
     event: sunset
+    offset: '-00:45:00'
   action:
     service: light.turn_on
     data_template:

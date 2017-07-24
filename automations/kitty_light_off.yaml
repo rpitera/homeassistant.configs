@@ -1,4 +1,4 @@
-# Turn on Spirit's light after sunset and then turn off at 11:00 PM
+# Turn on Spirit's light just before sunset and then turn off at 11:00 PM
 - alias: 'Kitty Light Off'
   trigger:
     platform: time

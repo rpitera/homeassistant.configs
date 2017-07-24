@@ -1,0 +1,12 @@
+- alias: "FireTV started from Bedroom Harmony Hub"
+  trigger:
+    platform: state
+    entity_id: remote.bedroom
+  condition:
+    condition: template
+    value_template: '{{ trigger.to_state.attributes.current_activity == "Watch FireTV" }}'
+  action:
+    service: input_select.select_option
+    entity_id: input_select.bedroom_tv
+    data:
+      option: "Watch FireTV"

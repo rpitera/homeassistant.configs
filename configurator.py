@@ -13,6 +13,9 @@ import base64
 import ipaddress
 import signal
 import cgi
+import shlex
+import subprocess
+import logging
 from string import Template
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import urllib.request
@@ -30,7 +33,7 @@ SSL_KEY = "/etc/letsencrypt/live/westofeast.no-ip.org/privkey.pem"
 HASS_API = "http://127.0.0.1:8123/api/"
 HASS_API = "https://westofeast.no-ip.org/api/"
 # If a password is required to access the API, set it in the form of "password"
-HASS_API_PASSWORD = "shogun1961"
+HASS_API_PASSWORD = "squanchyc137"
 # To enable authentication, set the credentials in the form of "username:password"
 CREDENTIALS = "admin:trustno1"
 # Limit access to the configurator by adding allowed IP addresses / networks to the list,
@@ -44,8 +47,15 @@ BANLIMIT = 0
 GIT = False
 ### End of options
 
-RELEASEURL = "https://api.github.com/repos/danielperna84/hass-poc-configurator/releases/latest"
-VERSION = "0.1.5"
+LOGLEVEL = logging.INFO
+LOG = logging.getLogger(__name__)
+LOG.setLevel(LOGLEVEL)
+SO = logging.StreamHandler(sys.stdout)
+SO.setLevel(LOGLEVEL)
+SO.setFormatter(logging.Formatter('%(levelname)s:%(asctime)s:%(name)s:%(message)s'))
+LOG.addHandler(SO)
+RELEASEURL = "https://api.github.com/repos/danielperna84/hass-configurator/releases/latest"
+VERSION = "0.1.7"
 BASEDIR = "."
 DEV = False
 HTTPD = None
@@ -55,7 +65,7 @@ if GIT:
     try:
         from git import Repo as REPO
     except Exception:
-        print("Unable to import Git module")
+        LOG.warn("Unable to import Git module")
 INDEX = Template(r"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -63,7 +73,8 @@ INDEX = Template(r"""<!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
     <title>HASS Configurator</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/1.8.36/css/materialdesignicons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
     <style type="text/css" media="screen">
         body {
             margin: 0;
@@ -97,6 +108,14 @@ INDEX = Template(r"""<!DOCTYPE html>
         .leftellipsis {
             overflow: hidden;
             direction: rtl;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .select-wrapper input.select-dropdown {
+            width: 96%;
+            overflow: hidden;
+            direction: ltr;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
@@ -255,6 +274,10 @@ INDEX = Template(r"""<!DOCTYPE html>
             color: #616161 !important;
         }
 
+        .fb_dd {
+            margin-left: -15px !important;
+        }
+
         .blue_check:checked+label:before {
             border-right: 2px solid #03a9f4;
             border-bottom: 2px solid #03a9f4;
@@ -274,7 +297,7 @@ INDEX = Template(r"""<!DOCTYPE html>
             box-shadow: 0 1px 0 0 #03a9f4 !important
         }
 
-        #modal_acekeyboard, #modal_components {
+        #modal_acekeyboard, #modal_components, #modal_icons {
             top: auto;
             width: 96%;
             min-height: 96%;
@@ -443,7 +466,7 @@ INDEX = Template(r"""<!DOCTYPE html>
 
         .fbmenuicon_pad {
             min-height: 64px;
-            margin-top: 8px !important;
+            margin-top: 6px !important;
             margin-right: 18px !important;
             color: #616161 !important;
         }
@@ -566,20 +589,32 @@ INDEX = Template(r"""<!DOCTYPE html>
   <main>
     <ul id="dropdown_menu" class="dropdown-content z-depth-4">
         <li><a target="_blank" href="#modal_components">HASS Components</a></li>
+        <li><a target="_blank" href="#modal_icons">Material Icons</a></li>
         <li><a href="#" data-activates="ace_settings" class="ace_settings-collapse">Editor Settings</a></li>
-        <li><a href="#modal_about">About PoC</a></li>
+        <li><a href="#modal_about">About HASS-Configurator</a></li>
         <li class="divider"></li>
-        <li><a href="#modal_check_config">Check HASS Configuration</a></li>
+        <!--<li><a href="#modal_check_config">Check HASS Configuration</a></li>-->
+        <li><a href="#modal_reload_automations">Reload automations</a></li>
+        <li><a href="#modal_reload_groups">Reload groups</a></li>
+        <li><a href="#modal_reload_core">Reload core</a></li>
         <li><a href="#modal_restart">Restart HASS</a></li>
+        <li class="divider"></li>
+        <li><a href="#modal_exec_command">Execute shell command</a></li>
     </ul>
     <ul id="dropdown_menu_mobile" class="dropdown-content z-depth-4">
         <li><a target="_blank" href="https://home-assistant.io/help/">Need HASS Help?</a></li>
         <li><a target="_blank" href="https://home-assistant.io/components/">HASS Components</a></li>
+        <li><a target="_blank" href="https://materialdesignicons.com/">Material Icons</a></li>
         <li><a href="#" data-activates="ace_settings" class="ace_settings-collapse">Editor Settings</a></li>
-        <li><a href="#modal_about">About PoC</a></li>
+        <li><a href="#modal_about">About HASS-Configurator</a></li>
         <li class="divider"></li>
-        <li><a href="#modal_check_config">Check HASS Configuration</a></li>
+        <!--<li><a href="#modal_check_config">Check HASS Configuration</a></li>-->
+        <li><a href="#modal_reload_automations">Reload automations</a></li>
+        <li><a href="#modal_reload_groups">Reload groups</a></li>
+        <li><a href="#modal_reload_core">Reload core</a></li>
         <li><a href="#modal_restart">Restart HASS</a></li>
+        <li class="divider"></li>
+        <li><a href="#modal_exec_command">Execute shell command</a></li>
     </ul>
     <ul id="dropdown_gitmenu" class="dropdown-content z-depth-4">
         <li><a href="#modal_init" class="nowrap waves-effect">git init</a></li>
@@ -598,9 +633,18 @@ INDEX = Template(r"""<!DOCTYPE html>
             <a class="modal-action modal-close waves-effect btn-flat Right light-blue-text">Close</a>
         </div>
     </div>
+    <div id="modal_icons" class="modal bottom-sheet modal-fixed-footer">
+    <div class="modal-content_nopad">
+            <iframe src="https://materialdesignicons.com/" style="height: 90vh; width: 100vw"> </iframe>
+            <a target="_blank" href="https://materialdesignicons.com/" class="hide-on-med-and-down modal_btn waves-effect btn-large btn-flat left"><i class="material-icons">launch</i></a>
+        </div>
+        <div class="modal-footer">
+            <a class="modal-action modal-close waves-effect btn-flat Right light-blue-text">Close</a>
+        </div>
+    </div>
     <div id="modal_acekeyboard" class="modal bottom-sheet modal-fixed-footer">
         <div class="modal-content centered">
-        <h4>Ace Keyboard Shortcuts</h4>
+        <h4 class="grey-text text-darken-3">Ace Keyboard Shortcuts<i class="mdi mdi-keyboard right grey-text text-darken-3" style="font-size: 2rem;"></i></h4>
         <br>
         <ul class="collapsible popout" data-collapsible="expandable">
           <li>
@@ -1108,7 +1152,7 @@ INDEX = Template(r"""<!DOCTYPE html>
     </div>
     <div id="modal_save" class="modal">
         <div class="modal-content">
-            <h4>Save</h4>
+            <h4 class="grey-text text-darken-3">Save<i class="grey-text text-darken-3 material-icons right" style="font-size: 2rem;">save</i></h4>
             <p>Do you really want to save?</p>
         </div>
         <div class="modal-footer">
@@ -1118,7 +1162,7 @@ INDEX = Template(r"""<!DOCTYPE html>
     </div>
     <div id="modal_upload" class="modal">
         <div class="modal-content">
-            <h4>Upload File</h4>
+            <h4 class="grey-text text-darken-3">Upload File<i class="grey-text text-darken-3 material-icons right" style="font-size: 2.28rem;">file_upload</i></h4>
             <p>Please choose a file to upload</p>
             <form action="#" id="uploadform">
               <div class="file-field input-field">
@@ -1139,14 +1183,7 @@ INDEX = Template(r"""<!DOCTYPE html>
     </div>
     <div id="modal_init" class="modal">
         <div class="modal-content">
-            <div class="row no-padding">
-              <div class="col s11 no-padding">
-                <h4>git init</h4>
-              </div>
-              <div class="col s1">
-                <img src="https://image.flaticon.com/icons/svg/52/52234.svg" style="max-width: 40px;" >
-              </div>
-            </div>
+          <h4 class="grey-text text-darken-3">git init<i class="mdi mdi-git right grey-text text-darken-3" style="font-size: 2.48rem;"></i></h4>
           <p>Are you sure you want to initialize a repository at the current path?</p>
         </div>
         <div class="modal-footer">
@@ -1156,14 +1193,7 @@ INDEX = Template(r"""<!DOCTYPE html>
     </div>
     <div id="modal_commit" class="modal">
         <div class="modal-content">
-          <div class="row no-padding">
-            <div class="col s11 no-padding">
-              <h4>git commit</h4>
-            </div>
-            <div class="col s1">
-              <img src="https://image.flaticon.com/icons/svg/52/52234.svg" style="max-width: 40px;" >
-            </div>
-          </div>
+          <h4 class="grey-text text-darken-3">git commit<i class="mdi mdi-git right grey-text text-darken-3" style="font-size: 2.48rem;"></i></h4>
           <div class="row">
             <div class="input-field col s12">
               <input type="text" id="commitmessage">
@@ -1178,7 +1208,7 @@ INDEX = Template(r"""<!DOCTYPE html>
     </div>
     <div id="modal_close" class="modal">
         <div class="modal-content">
-            <h4>Close File</h4>
+            <h4 class="grey-text text-darken-3">Close File<i class="grey-text text-darken-3 material-icons right" style="font-size: 2.28rem;">close</i></h4>
             <p>Are you sure you want to close the current file? Unsaved changes will be lost.</p>
         </div>
         <div class="modal-footer">
@@ -1188,7 +1218,7 @@ INDEX = Template(r"""<!DOCTYPE html>
     </div>
     <div id="modal_delete" class="modal">
         <div class="modal-content">
-            <h4>Delete</h4>
+            <h4 class="grey-text text-darken-3">Delete</h4>
             <p>Are you sure you want to delete <span class="fb_currentfile"></span>?</p>
         </div>
         <div class="modal-footer">
@@ -1198,14 +1228,7 @@ INDEX = Template(r"""<!DOCTYPE html>
     </div>
     <div id="modal_gitadd" class="modal">
         <div class="modal-content">
-          <div class="row no-padding">
-            <div class="col s11 no-padding">
-              <h4>git add</h4>
-            </div>
-            <div class="col s1">
-              <img src="https://image.flaticon.com/icons/svg/52/52234.svg" style="max-width: 40px;" >
-            </div>
-          </div>
+          <h4 class="grey-text text-darken-3">git add<i class="mdi mdi-git right grey-text text-darken-3" style="font-size: 2.48rem;"></i></h4>
           <p>Are you sure you want to add <span class="fb_currentfile"></span> to the index?</p>
         </div>
         <div class="modal-footer">
@@ -1215,17 +1238,47 @@ INDEX = Template(r"""<!DOCTYPE html>
     </div>
     <div id="modal_check_config" class="modal">
         <div class="modal-content">
-            <h4>Check configuration</h4>
-            <p>Do you really want to check the configuration?</p>
+            <h4 class="grey-text text-darken-3">Check configuration<i class="mdi mdi-settings right grey-text text-darken-3" style="font-size: 2rem;"></i></h4>
+            <p>Do you want to check the configuration?</p>
         </div>
         <div class="modal-footer">
           <a class=" modal-action modal-close waves-effect waves-red btn-flat light-blue-text">No</a>
           <a onclick="check_config()" class=" modal-action modal-close waves-effect waves-green btn-flat light-blue-text">Yes</a>
         </div>
     </div>
+    <div id="modal_reload_automations" class="modal">
+        <div class="modal-content">
+            <h4 class="grey-text text-darken-3">Reload automations<i class="mdi mdi-settings right grey-text text-darken-3" style="font-size: 2rem;"></i></h4>
+            <p>Do you want to reload the automations?</p>
+        </div>
+        <div class="modal-footer">
+          <a class=" modal-action modal-close waves-effect waves-red btn-flat light-blue-text">No</a>
+          <a onclick="reload_automations()" class=" modal-action modal-close waves-effect waves-green btn-flat light-blue-text">Yes</a>
+        </div>
+    </div>
+    <div id="modal_reload_groups" class="modal">
+        <div class="modal-content">
+            <h4 class="grey-text text-darken-3">Reload groups<i class="mdi mdi-settings right grey-text text-darken-3" style="font-size: 2rem;"></i></h4>
+            <p>Do you want to reload the groups?</p>
+        </div>
+        <div class="modal-footer">
+          <a class=" modal-action modal-close waves-effect waves-red btn-flat light-blue-text">No</a>
+          <a onclick="reload_groups()" class=" modal-action modal-close waves-effect waves-green btn-flat light-blue-text">Yes</a>
+        </div>
+    </div>
+    <div id="modal_reload_core" class="modal">
+        <div class="modal-content">
+            <h4 class="grey-text text-darken-3">Reload core<i class="mdi mdi-settings right grey-text text-darken-3" style="font-size: 2rem;"></i></h4>
+            <p>Do you want to reload the core?</p>
+        </div>
+        <div class="modal-footer">
+          <a class=" modal-action modal-close waves-effect waves-red btn-flat light-blue-text">No</a>
+          <a onclick="reload_core()" class=" modal-action modal-close waves-effect waves-green btn-flat light-blue-text">Yes</a>
+        </div>
+    </div>
     <div id="modal_restart" class="modal">
         <div class="modal-content">
-            <h4>Restart</h4>
+            <h4 class="grey-text text-darken-3">Restart<i class="mdi mdi-restart right grey-text text-darken-3" style="font-size: 2rem;"></i></h4>
             <p>Do you really want to restart Home Assistant?</p>
         </div>
         <div class="modal-footer">
@@ -1233,9 +1286,27 @@ INDEX = Template(r"""<!DOCTYPE html>
           <a onclick="restart()" class=" modal-action modal-close waves-effect waves-green btn-flat light-blue-text">Yes</a>
         </div>
     </div>
+    <div id="modal_exec_command" class="modal">
+        <div class="modal-content">
+            <h4 class="grey-text text-darken-3">Execute shell command<i class="mdi mdi-laptop right grey-text text-darken-3" style="font-size: 2rem;"></i></h4>
+            <pre class="col s6" id="command_history"></pre>
+            <br>
+            <div class="row">
+                <div class="input-field col s12">
+                  <input placeholder="/bin/ls -l /var/log" id="commandline" type="text">
+                  <label for="commandline">Command</label>
+                </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+            <a class=" modal-action modal-close waves-effect waves-red btn-flat light-blue-text">Close</a>
+            <a onclick="document.getElementById('command_history').innerText='';" class=" modal-action waves-effect waves-green btn-flat light-blue-text">Clear</a>
+            <a onclick="exec_command()" class=" modal-action waves-effect waves-green btn-flat light-blue-text">Execute</a>
+        </div>
+    </div>
     <div id="modal_markdirty" class="modal">
         <div class="modal-content">
-            <h4>Unsaved Changes</h4>
+            <h4 class="grey-text text-darken-3">Unsaved Changes<i class="grey-text text-darken-3 material-icons right" style="font-size: 2rem;">save</i></h4>
             <p>You have unsaved changes in the current file. Please save the changes or close the file before opening a new one.</p>
         </div>
         <div class="modal-footer">
@@ -1246,7 +1317,7 @@ INDEX = Template(r"""<!DOCTYPE html>
     </div>
     <div id="modal_newfolder" class="modal">
         <div class="modal-content">
-            <h4>New Folder</h4>
+            <h4 class="grey-text text-darken-3">New Folder<i class="grey-text text-darken-3 material-icons right" style="font-size: 2rem;">create_new_folder</i></h4>
             <br>
             <div class="row">
                 <div class="input-field col s12">
@@ -1262,7 +1333,7 @@ INDEX = Template(r"""<!DOCTYPE html>
     </div>
     <div id="modal_newfile" class="modal">
         <div class="modal-content">
-            <h4>New File</h4>
+            <h4 class="grey-text text-darken-3">New File<i class="grey-text text-darken-3 material-icons right" style="font-size: 2rem;">note_add</i></h4>
             <br>
             <div class="row">
                 <div class="input-field col s12">
@@ -1278,14 +1349,7 @@ INDEX = Template(r"""<!DOCTYPE html>
     </div>
     <div id="modal_newbranch" class="modal">
         <div class="modal-content">
-          <div class="row no-padding">
-            <div class="col s11 no-padding">
-              <h4>New Branch</h4>
-            </div>
-            <div class="col s1">
-              <img src="https://image.flaticon.com/icons/svg/52/52234.svg" style="max-width: 40px;" >
-            </div>
-          </div>
+            <h4 class="grey-text text-darken-3">New Branch<i class="mdi mdi-git right grey-text text-darken-3" style="font-size: 2.48rem;"></i></h4>
             <div class="row">
                 <div class="input-field col s12">
                     <input type="text" id="newbranch">
@@ -1300,7 +1364,7 @@ INDEX = Template(r"""<!DOCTYPE html>
     </div>
     <div id="modal_about" class="modal modal-fixed-footer">
         <div class="modal-content">
-            <h4><a class="black-text" href="https://github.com/danielperna84/hass-poc-configurator/" target="_blank">HASS Configurator</a></h4>
+            <h4 class="grey-text text-darken-3"><a class="black-text" href="https://github.com/danielperna84/hass-poc-configurator/" target="_blank">HASS Configurator</a></h4>
             <p>Version: <a class="$versionclass" href="https://github.com/danielperna84/hass-poc-configurator/releases/lafbicon_pad" target="_blank">$current</a></p>
             <p>Web-based file editor designed to modify configuration files of <a class="light-blue-text" href="https://home-assistant.io/" target="_blank">Home Assistant</a> or other textual files. Use at your own risk.</p>
             <p>Published under the MIT license</p>
@@ -1334,7 +1398,7 @@ INDEX = Template(r"""<!DOCTYPE html>
                       <img src="https://evwilkin.github.io/images/materializecss.png">
                     </div>
                     <div class="card-content">
-                      <p class="grey-text text-darken-2">Materialize CSS</p>
+                      <p class="grey-text text-darken-2">Materialize</p>
                     </div>
                   </div>
                 </a>
@@ -1378,7 +1442,7 @@ INDEX = Template(r"""<!DOCTYPE html>
                     <option value="" disabled selected>Select trigger platform</option>
                     <option value="event">Event</option>
                     <option value="mqtt">MQTT</option>
-                    <option value="numberic_state">Numeric State</option>
+                    <option value="numeric_state">Numeric State</option>
                     <option value="state">State</option>
                     <option value="sun">Sun</option>
                     <option value="template">Template</option>
@@ -1439,13 +1503,13 @@ INDEX = Template(r"""<!DOCTYPE html>
               <a class="col s3 waves-effect fbtoolbarbutton tooltipped" href="#modal_newfile" data-position="bottom" data-delay="500" data-tooltip="New File"><i class="grey-text text-darken-2 material-icons fbtoolbarbutton_icon">note_add</i></a>
               <a class="col s3 waves-effect fbtoolbarbutton tooltipped" href="#modal_newfolder" data-position="bottom" data-delay="500" data-tooltip="New Folder"><i class="grey-text text-darken-2 material-icons fbtoolbarbutton_icon">create_new_folder</i></a>
               <a class="col s3 waves-effect fbtoolbarbutton tooltipped" href="#modal_upload" data-position="bottom" data-delay="500" data-tooltip="Upload File"><i class="grey-text text-darken-2 material-icons fbtoolbarbutton_icon">file_upload</i></a>
-              <a class="col s3 waves-effect fbtoolbarbutton tooltipped dropdown-button" data-activates="dropdown_gitmenu" data-alignment='right' data-beloworigin='true' data-delay='500' data-position="bottom" data-tooltip="Git"><i class="grey-text text-darken-2 material-icons fbtoolbarbutton_icon">call_split</i></a>
+              <a class="col s3 waves-effect fbtoolbarbutton tooltipped dropdown-button" data-activates="dropdown_gitmenu" data-alignment='right' data-beloworigin='true' data-delay='500' data-position="bottom" data-tooltip="Git"><i class="mdi mdi-git grey-text text-darken-2 material-icons" style="padding-top: 17px;"></i></a>
             </ul>
             <ul class="row center toolbar_mobile hide-on-med-and-up grey lighten-4" style="margin-bottom: 0;">
               <a class="col s3 waves-effect fbtoolbarbutton" href="#modal_newfile"><i class="grey-text text-darken-2 material-icons fbtoolbarbutton_icon">note_add</i></a>
               <a class="col s3 waves-effect fbtoolbarbutton" href="#modal_newfolder"><i class="grey-text text-darken-2 material-icons fbtoolbarbutton_icon">create_new_folder</i></a>
               <a class="col s3 waves-effect fbtoolbarbutton" href="#modal_upload"><i class="grey-text text-darken-2 material-icons fbtoolbarbutton_icon">file_upload</i></a>
-              <a class="col s3 waves-effect fbtoolbarbutton dropdown-button" data-activates="dropdown_gitmenu_mobile" data-alignment='right' data-beloworigin='true'><i class="grey-text text-darken-2 material-icons fbtoolbarbutton_icon">call_split</i></a>
+              <a class="col s3 waves-effect fbtoolbarbutton dropdown-button" data-activates="dropdown_gitmenu_mobile" data-alignment='right' data-beloworigin='true'><i class="mdi mdi-git grey-text text-darken-2 material-icons" style="padding-top: 17px;"></i></a>
             </ul>
           </li>
           <li>
@@ -1476,7 +1540,7 @@ INDEX = Template(r"""<!DOCTYPE html>
                 <option value="" disabled selected>Select trigger platform</option>
                 <option value="event">Event</option>
                 <option value="mqtt">MQTT</option>
-                <option value="numberic_state">Numeric State</option>
+                <option value="numeric_state">Numeric State</option>
                 <option value="state">State</option>
                 <option value="sun">Sun</option>
                 <option value="template">Template</option>
@@ -1824,7 +1888,7 @@ INDEX = Template(r"""<!DOCTYPE html>
 <input type="hidden" id="fb_currentfile" value="" />
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         $('select').material_select();
@@ -1987,19 +2051,25 @@ INDEX = Template(r"""<!DOCTYPE html>
             nameparts = itemdata.name.split('.');
             extension = nameparts[nameparts.length -1];
             if (['c', 'cpp', 'css', 'htm', 'html', 'js', 'json', 'php', 'py', 'sh', 'sql', 'xml', 'yaml'].indexOf(extension.toLocaleLowerCase()) > +1 ) {
-                iicon.innerHTML = 'code';
+                iicon.classList.add('mdi', 'mdi-file-xml');
+            }
+            else if (['txt', 'doc', 'docx'].indexOf(extension.toLocaleLowerCase()) > -1 ) {
+                iicon.classList.add('mdi', 'mdi-file-document');
             }
             else if (['bmp', 'gif', 'jpg', 'jpeg', 'png', 'tif', 'webp'].indexOf(extension.toLocaleLowerCase()) > -1 ) {
-                iicon.innerHTML = 'image';
+                iicon.classList.add('mdi', 'mdi-file-image');
             }
             else if (['mp3', 'ogg', 'wav'].indexOf(extension) > -1 ) {
-                iicon.innerHTML = 'audiotrack';
+                iicon.classList.add('mdi', 'mdi-file-music');
             }
             else if (['avi', 'flv', 'mkv', 'mp4', 'mpg', 'mpeg', 'webm'].indexOf(extension.toLocaleLowerCase()) > -1 ) {
-                iicon.innerHTML = 'video_label';
+                iicon.classList.add('mdi', 'mdi-file-video');
+            }
+            else if (['pdf'].indexOf(extension.toLocaleLowerCase()) > -1 ) {
+                iicon.classList.add('mdi', 'mdi-file-pdf');
             }
             else {
-                iicon.innerHTML = 'insert_drive_file';
+                iicon.classList.add('mdi', 'mdi-file');
             }
             item.setAttribute("onclick", "loadfile('" + encodeURI(itemdata.fullpath) + "')");
             stats.innerHTML = "Mod.: " + date.toUTCString() + "&nbsp;&nbsp;Size: " + (itemdata.size/1024).toFixed(1) + " KiB";
@@ -2032,12 +2102,12 @@ INDEX = Template(r"""<!DOCTYPE html>
         var dropdown = document.createElement('ul');
         dropdown.id = 'fb_dropdown_' + index;
         dropdown.classList.add('dropdown-content');
-        dropdown.classList.add('z-depth-4');
+        dropdown.classList.add("z-depth-4");
 
         // Download button
         var dd_download = document.createElement('li');
         var dd_download_a = document.createElement('a');
-        dd_download_a.classList.add('waves-effect');
+        dd_download_a.classList.add("waves-effect", "fb_dd");
         dd_download_a.setAttribute('onclick', "download_file('" + encodeURI(itemdata.fullpath) + "')");
         dd_download_a.innerHTML = "Download";
         dd_download.appendChild(dd_download_a);
@@ -2045,7 +2115,7 @@ INDEX = Template(r"""<!DOCTYPE html>
 
         // Delete button
         var dd_delete = document.createElement('li');
-        dd_delete.classList.add("waves-effect");
+        dd_delete.classList.add("waves-effect", "fb_dd");
         var dd_delete_a = document.createElement('a');
         dd_delete_a.setAttribute('href', "#modal_delete");
         dd_delete_a.innerHTML = "Delete";
@@ -2184,8 +2254,29 @@ INDEX = Template(r"""<!DOCTYPE html>
             }
             else {
                 var $toastContent = $("<div><pre>" + resp[0].state + "</pre></div>");
-                Materialize.toast($toastContent, 5000);
+                Materialize.toast($toastContent, 2000);
             }
+        });
+    }
+
+    function reload_automations() {
+        $.get("api/reload_automations", function (resp) {
+            var $toastContent = $("<div>Automations reloaded</div>");
+            Materialize.toast($toastContent, 2000);
+        });
+    }
+
+    function reload_groups() {
+        $.get("api/reload_groups", function (resp) {
+            var $toastContent = $("<div><pre>Groups reloaded</pre></div>");
+            Materialize.toast($toastContent, 2000);
+        });
+    }
+
+    function reload_core() {
+        $.get("api/reload_core", function (resp) {
+            var $toastContent = $("<div><pre>Core reloaded</pre></div>");
+            Materialize.toast($toastContent, 2000);
         });
     }
 
@@ -2261,6 +2352,31 @@ INDEX = Template(r"""<!DOCTYPE html>
                     listdir(document.getElementById('fbheader').innerHTML)
                     document.getElementById('currentfile').value='';
                     editor.setValue('');
+                }
+            });
+        }
+    }
+
+    function exec_command() {
+        var command = document.getElementById('commandline').value;
+        if (command.length > 0) {
+            data = new Object();
+            data.command = command;
+            data.timeout = 15;
+            $.post("api/exec_command", data).done(function(resp) {
+                if (resp.error) {
+                    var $toastContent = $("<div><pre>" + resp.message + "</pre></div>");
+                    Materialize.toast($toastContent, 5000);
+                }
+                else {
+                    var history = document.getElementById('command_history');
+                    history.innerText += resp.message + ': ' + resp.returncode + "\n";
+                    if (resp.stdout) {
+                        history.innerText += resp.stdout;
+                    }
+                    if (resp.stderr) {
+                        history.innerText += resp.stderr;
+                    }
                 }
             });
         }
@@ -2550,7 +2666,7 @@ INDEX = Template(r"""<!DOCTYPE html>
 
 def signal_handler(sig, frame):
     global HTTPD
-    print("Got signal: %s. Shutting down server" % str(sig))
+    LOG.info("Got signal: %s. Shutting down server" % str(sig))
     HTTPD.server_close()
     sys.exit(0)
 
@@ -2574,8 +2690,8 @@ def load_settings(settingsfile):
                 BANLIMIT = settings.get("BANLIMIT", BANLIMIT)
                 DEV = settings.get("DEV", DEV)
     except Exception as err:
-        print(err)
-        print("Not loading static settings")
+        LOG.warn(err)
+        LOG.warn("Not loading static settings")
     return False
 
 def get_dircontent(path, repo=None):
@@ -2591,7 +2707,7 @@ def get_dircontent(path, repo=None):
             for element in repo.index.diff("HEAD"):
                 staged["%s%s%s" % (repo.working_dir, os.sep, "%s"%os.sep.join(element.b_path.split('/')))] = element.change_type
         except Exception as err:
-            print("Exception: %s" % str(err))
+            LOG.warn("Exception: %s" % str(err))
         for element in repo.index.diff(None):
             unstaged["%s%s%s" % (repo.working_dir, os.sep, "%s"%os.sep.join(element.b_path.split('/')))] = element.change_type
     else:
@@ -2633,8 +2749,8 @@ def get_html():
                 html = Template(fptr.read())
                 return html
         except Exception as err:
-            print(err)
-            print("Delivering embedded HTML")
+            LOG.warn(err)
+            LOG.warn("Delivering embedded HTML")
     return INDEX
 
 def check_access(clientip):
@@ -2651,6 +2767,10 @@ def check_access(clientip):
     return False
 
 class RequestHandler(BaseHTTPRequestHandler):
+    def log_message(self, format, *args):
+        LOG.info("%s - %s" % (self.client_address[0], format%args))
+        return
+
     def do_BLOCK(self):
         self.send_response(420)
         self.end_headers()
@@ -2677,7 +2797,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                     else:
                         content = "File not found"
             except Exception as err:
-                print(err)
+                LOG.warn(err)
                 content = str(err)
             self.wfile.write(bytes(content, "utf8"))
             return
@@ -2687,7 +2807,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             try:
                 if filename:
                     filename = unquote(filename[0]).encode('utf-8')
-                    print(filename)
+                    LOG.info(filename)
                     if os.path.isfile(os.path.join(BASEDIR.encode('utf-8'), filename)):
                         with open(os.path.join(BASEDIR.encode('utf-8'), filename), 'rb') as fptr:
                             filecontent = fptr.read()
@@ -2698,7 +2818,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                     else:
                         content = "File not found"
             except Exception as err:
-                print(err)
+                LOG.warn(err)
                 content = str(err)
             self.send_header('Content-type', 'text/text')
             self.wfile.write(bytes(content, "utf8"))
@@ -2724,7 +2844,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                                 for branch in repo.branches:
                                     branches.append(branch.name)
                             except Exception as err:
-                                print("Exception (no repo): %s" % str(err))
+                                LOG.debug("Exception (no repo): %s" % str(err))
                         dircontent = get_dircontent(dirpath.decode('utf-8'), repo)
                         filedata = {'content': dircontent,
                                     'abspath': os.path.abspath(dirpath).decode('utf-8'),
@@ -2735,7 +2855,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                                    }
                         self.wfile.write(bytes(json.dumps(filedata), "utf8"))
             except Exception as err:
-                print(err)
+                LOG.warn(err)
                 content = str(err)
                 self.wfile.write(bytes(content, "utf8"))
             return
@@ -2746,9 +2866,9 @@ class RequestHandler(BaseHTTPRequestHandler):
             dirpath = query.get('path', None)
             if dirpath:
                 dirpath = unquote(dirpath[0]).encode('utf-8')
-                print(dirpath)
+                LOG.debug(dirpath)
                 absp = os.path.abspath(dirpath)
-                print(absp)
+                LOG.debug(absp)
                 if os.path.isdir(dirpath):
                     self.wfile.write(os.path.abspath(dirpath))
             return
@@ -2759,14 +2879,14 @@ class RequestHandler(BaseHTTPRequestHandler):
             dirpath = query.get('path', None)
             if dirpath:
                 dirpath = unquote(dirpath[0]).encode('utf-8')
-                print(dirpath)
+                LOG.debug(dirpath)
                 absp = os.path.abspath(dirpath)
-                print(absp)
+                LOG.debug(absp)
                 if os.path.isdir(dirpath):
                     self.wfile.write(os.path.abspath(os.path.dirname(dirpath)))
             return
         elif req.path == '/api/restart':
-            print("/api/restart")
+            LOG.info("/api/restart")
             self.send_header('Content-type', 'text/json')
             self.end_headers()
             res = {"restart": False}
@@ -2779,14 +2899,14 @@ class RequestHandler(BaseHTTPRequestHandler):
                 req = urllib.request.Request("%sservices/homeassistant/restart" % HASS_API, headers=headers, method='POST')
                 with urllib.request.urlopen(req) as response:
                     res = json.loads(response.read().decode('utf-8'))
-                    print(res)
+                    LOG.debug(res)
             except Exception as err:
-                print(err)
+                LOG.warn(err)
                 res['restart'] = str(err)
             self.wfile.write(bytes(json.dumps(res), "utf8"))
             return
         elif req.path == '/api/check_config':
-            print("/api/check_config")
+            LOG.info("/api/check_config")
             self.send_header('Content-type', 'text/json')
             self.end_headers()
             res = {"check_config": False}
@@ -2797,11 +2917,71 @@ class RequestHandler(BaseHTTPRequestHandler):
                 if HASS_API_PASSWORD:
                     headers["x-ha-access"] = HASS_API_PASSWORD
                 req = urllib.request.Request("%sservices/homeassistant/check_config" % HASS_API, headers=headers, method='POST')
-                with urllib.request.urlopen(req) as response:
-                    res = json.loads(response.read().decode('utf-8'))
-                    print(res)
+                # with urllib.request.urlopen(req) as response:
+                #     print(json.loads(response.read().decode('utf-8')))
+                #     res['service'] = "called successfully"
             except Exception as err:
-                print(err)
+                LOG.warn(err)
+                res['restart'] = str(err)
+            self.wfile.write(bytes(json.dumps(res), "utf8"))
+            return
+        elif req.path == '/api/reload_automations':
+            LOG.info("/api/reload_automations")
+            self.send_header('Content-type', 'text/json')
+            self.end_headers()
+            res = {"reload_automations": False}
+            try:
+                headers = {
+                    "Content-Type": "application/json"
+                }
+                if HASS_API_PASSWORD:
+                    headers["x-ha-access"] = HASS_API_PASSWORD
+                req = urllib.request.Request("%sservices/automation/reload" % HASS_API, headers=headers, method='POST')
+                with urllib.request.urlopen(req) as response:
+                    LOG.debug(json.loads(response.read().decode('utf-8')))
+                    res['service'] = "called successfully"
+            except Exception as err:
+                LOG.warn(err)
+                res['restart'] = str(err)
+            self.wfile.write(bytes(json.dumps(res), "utf8"))
+            return
+        elif req.path == '/api/reload_groups':
+            LOG.info("/api/reload_groups")
+            self.send_header('Content-type', 'text/json')
+            self.end_headers()
+            res = {"reload_groups": False}
+            try:
+                headers = {
+                    "Content-Type": "application/json"
+                }
+                if HASS_API_PASSWORD:
+                    headers["x-ha-access"] = HASS_API_PASSWORD
+                req = urllib.request.Request("%sservices/group/reload" % HASS_API, headers=headers, method='POST')
+                with urllib.request.urlopen(req) as response:
+                    LOG.debug(json.loads(response.read().decode('utf-8')))
+                    res['service'] = "called successfully"
+            except Exception as err:
+                LOG.warn(err)
+                res['restart'] = str(err)
+            self.wfile.write(bytes(json.dumps(res), "utf8"))
+            return
+        elif req.path == '/api/reload_core':
+            LOG.info("/api/reload_core")
+            self.send_header('Content-type', 'text/json')
+            self.end_headers()
+            res = {"reload_core": False}
+            try:
+                headers = {
+                    "Content-Type": "application/json"
+                }
+                if HASS_API_PASSWORD:
+                    headers["x-ha-access"] = HASS_API_PASSWORD
+                req = urllib.request.Request("%sservices/homeassistant/reload_core_config" % HASS_API, headers=headers, method='POST')
+                with urllib.request.urlopen(req) as response:
+                    LOG.debug(json.loads(response.read().decode('utf-8')))
+                    res['service'] = "called successfully"
+            except Exception as err:
+                LOG.warn(err)
                 res['restart'] = str(err)
             self.wfile.write(bytes(json.dumps(res), "utf8"))
             return
@@ -2821,8 +3001,8 @@ class RequestHandler(BaseHTTPRequestHandler):
                     boot = response.read().decode('utf-8')
 
             except Exception as err:
-                print("Exception getting bootstrap")
-                print(err)
+                LOG.warn("Exception getting bootstrap")
+                LOG.warn(err)
 
             color = "green"
             try:
@@ -2831,8 +3011,8 @@ class RequestHandler(BaseHTTPRequestHandler):
                 if VERSION != latest:
                     color = "red"
             except Exception as err:
-                print("Exception getting release")
-                print(err)
+                LOG.warn("Exception getting release")
+                LOG.warn(err)
             html = get_html().safe_substitute(bootstrap=boot,
                                               current=VERSION,
                                               versionclass=color,
@@ -2860,7 +3040,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             try:
                 postvars = parse_qs(self.rfile.read(length).decode('utf-8'), keep_blank_values=1)
             except Exception as err:
-                print(err)
+                LOG.warn(err)
                 response['message'] = "%s" % (str(err))
                 postvars = {}
             if 'filename' in postvars.keys() and 'text' in postvars.keys():
@@ -2879,7 +3059,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                         return
                     except Exception as err:
                         response['message'] = "%s" % (str(err))
-                        print(err)
+                        LOG.warn(err)
             else:
                 response['message'] = "Missing filename or text"
         elif req.path == '/api/upload':
@@ -2916,7 +3096,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             try:
                 postvars = parse_qs(self.rfile.read(length).decode('utf-8'), keep_blank_values=1)
             except Exception as err:
-                print(err)
+                LOG.warn(err)
                 response['message'] = "%s" % (str(err))
                 postvars = {}
             if 'path' in postvars.keys():
@@ -2937,20 +3117,67 @@ class RequestHandler(BaseHTTPRequestHandler):
                             self.wfile.write(bytes(json.dumps(response), "utf8"))
                             return
                         except Exception as err:
-                            print(err)
+                            LOG.warn(err)
                             response['error'] = True
                             response['message'] = str(err)
 
                     except Exception as err:
                         response['message'] = "%s" % (str(err))
-                        print(err)
+                        LOG.warn(err)
             else:
                 response['message'] = "Missing filename or text"
+        elif req.path == '/api/exec_command':
+            try:
+                postvars = parse_qs(self.rfile.read(length).decode('utf-8'), keep_blank_values=1)
+            except Exception as err:
+                LOG.warn(err)
+                response['message'] = "%s" % (str(err))
+                postvars = {}
+            if 'command' in postvars.keys():
+                if postvars['command']:
+                    try:
+                        command = shlex.split(postvars['command'][0])
+                        timeout = 15
+                        if 'timeout' in postvars.keys():
+                            if postvars['timeout']:
+                                timeout = int(postvars['timeout'][0])
+                        try:
+                            proc = subprocess.Popen(
+                                command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                            stdout, stderr = proc.communicate(timeout=timeout)
+                            self.send_response(200)
+                            self.send_header('Content-type', 'text/json')
+                            self.end_headers()
+                            response['error'] = False
+                            response['message'] = "Command executed: %s" % postvars['command'][0]
+                            response['returncode'] = proc.returncode
+                            try:
+                                response['stdout'] = stdout.decode(sys.getdefaultencoding())
+                            except Exception as err:
+                                LOG.warn(err)
+                                response['stdout'] = stdout.decode("utf-8", errors="replace")
+                            try:
+                                response['stderr'] = stderr.decode(sys.getdefaultencoding())
+                            except Exception as err:
+                                LOG.warn(err)
+                                response['stderr'] = stderr.decode("utf-8", errors="replace")
+                            self.wfile.write(bytes(json.dumps(response), "utf8"))
+                            return
+                        except Exception as err:
+                            LOG.warn(err)
+                            response['error'] = True
+                            response['message'] = str(err)
+
+                    except Exception as err:
+                        response['message'] = "%s" % (str(err))
+                        LOG.warn(err)
+            else:
+                response['message'] = "Missing command"
         elif req.path == '/api/gitadd':
             try:
                 postvars = parse_qs(self.rfile.read(length).decode('utf-8'), keep_blank_values=1)
             except Exception as err:
-                print(err)
+                LOG.warn(err)
                 response['message'] = "%s" % (str(err))
                 postvars = {}
             if 'path' in postvars.keys():
@@ -2970,20 +3197,20 @@ class RequestHandler(BaseHTTPRequestHandler):
                             self.wfile.write(bytes(json.dumps(response), "utf8"))
                             return
                         except Exception as err:
-                            print(err)
+                            LOG.warn(err)
                             response['error'] = True
                             response['message'] = str(err)
 
                     except Exception as err:
                         response['message'] = "%s" % (str(err))
-                        print(err)
+                        LOG.warn(err)
             else:
                 response['message'] = "Missing filename"
         elif req.path == '/api/commit':
             try:
                 postvars = parse_qs(self.rfile.read(length).decode('utf-8'), keep_blank_values=1)
             except Exception as err:
-                print(err)
+                LOG.warn(err)
                 response['message'] = "%s" % (str(err))
                 postvars = {}
             if 'path' in postvars.keys() and 'message' in postvars.keys():
@@ -3005,18 +3232,18 @@ class RequestHandler(BaseHTTPRequestHandler):
                         except Exception as err:
                             response['error'] = True
                             response['message'] = str(err)
-                            print(response)
+                            LOG.debug(response)
 
                     except Exception as err:
                         response['message'] = "Not a git repository: %s" % (str(err))
-                        print("Exception (no repo): %s" % str(err))
+                        LOG.warn("Exception (no repo): %s" % str(err))
             else:
                 response['message'] = "Missing path"
         elif req.path == '/api/checkout':
             try:
                 postvars = parse_qs(self.rfile.read(length).decode('utf-8'), keep_blank_values=1)
             except Exception as err:
-                print(err)
+                LOG.warn(err)
                 response['message'] = "%s" % (str(err))
                 postvars = {}
             if 'path' in postvars.keys() and 'branch' in postvars.keys():
@@ -3039,18 +3266,18 @@ class RequestHandler(BaseHTTPRequestHandler):
                         except Exception as err:
                             response['error'] = True
                             response['message'] = str(err)
-                            print(response)
+                            LOG.warn(response)
 
                     except Exception as err:
                         response['message'] = "Not a git repository: %s" % (str(err))
-                        print("Exception (no repo): %s" % str(err))
+                        LOG.warn("Exception (no repo): %s" % str(err))
             else:
                 response['message'] = "Missing path or branch"
         elif req.path == '/api/newbranch':
             try:
                 postvars = parse_qs(self.rfile.read(length).decode('utf-8'), keep_blank_values=1)
             except Exception as err:
-                print(err)
+                LOG.warn(err)
                 response['message'] = "%s" % (str(err))
                 postvars = {}
             if 'path' in postvars.keys() and 'branch' in postvars.keys():
@@ -3072,18 +3299,18 @@ class RequestHandler(BaseHTTPRequestHandler):
                         except Exception as err:
                             response['error'] = True
                             response['message'] = str(err)
-                            print(response)
+                            LOG.warn(response)
 
                     except Exception as err:
                         response['message'] = "Not a git repository: %s" % (str(err))
-                        print("Exception (no repo): %s" % str(err))
+                        LOG.warn("Exception (no repo): %s" % str(err))
             else:
                 response['message'] = "Missing path or branch"
         elif req.path == '/api/init':
             try:
                 postvars = parse_qs(self.rfile.read(length).decode('utf-8'), keep_blank_values=1)
             except Exception as err:
-                print(err)
+                LOG.warn(err)
                 response['message'] = "%s" % (str(err))
                 postvars = {}
             if 'path' in postvars.keys():
@@ -3103,18 +3330,18 @@ class RequestHandler(BaseHTTPRequestHandler):
                         except Exception as err:
                             response['error'] = True
                             response['message'] = str(err)
-                            print(response)
+                            LOG.warn(response)
 
                     except Exception as err:
                         response['message'] = "Not a git repository: %s" % (str(err))
-                        print("Exception (no repo): %s" % str(err))
+                        LOG.warn("Exception (no repo): %s" % str(err))
             else:
                 response['message'] = "Missing path or branch"
         elif req.path == '/api/newfolder':
             try:
                 postvars = parse_qs(self.rfile.read(length).decode('utf-8'), keep_blank_values=1)
             except Exception as err:
-                print(err)
+                LOG.warn(err)
                 response['message'] = "%s" % (str(err))
                 postvars = {}
             if 'path' in postvars.keys() and 'name' in postvars.keys():
@@ -3133,17 +3360,17 @@ class RequestHandler(BaseHTTPRequestHandler):
                             self.wfile.write(bytes(json.dumps(response), "utf8"))
                             return
                         except Exception as err:
-                            print(err)
+                            LOG.warn(err)
                             response['error'] = True
                             response['message'] = str(err)
                     except Exception as err:
                         response['message'] = "%s" % (str(err))
-                        print(err)
+                        LOG.warn(err)
         elif req.path == '/api/newfile':
             try:
                 postvars = parse_qs(self.rfile.read(length).decode('utf-8'), keep_blank_values=1)
             except Exception as err:
-                print(err)
+                LOG.warn(err)
                 response['message'] = "%s" % (str(err))
                 postvars = {}
             if 'path' in postvars.keys() and 'name' in postvars.keys():
@@ -3163,12 +3390,12 @@ class RequestHandler(BaseHTTPRequestHandler):
                             self.wfile.write(bytes(json.dumps(response), "utf8"))
                             return
                         except Exception as err:
-                            print(err)
+                            LOG.warn(err)
                             response['error'] = True
                             response['message'] = str(err)
                     except Exception as err:
                         response['message'] = "%s" % (str(err))
-                        print(err)
+                        LOG.warn(err)
             else:
                 response['message'] = "Missing filename or text"
         else:
@@ -3181,7 +3408,7 @@ class RequestHandler(BaseHTTPRequestHandler):
 
 class AuthHandler(RequestHandler):
     def do_AUTHHEAD(self):
-        print("Requesting authorization")
+        LOG.info("Requesting authorization")
         self.send_response(401)
         self.send_header('WWW-Authenticate', 'Basic realm=\"HASS-PoC-Configurator\"')
         self.send_header('Content-type', 'text/html')
@@ -3203,7 +3430,7 @@ class AuthHandler(RequestHandler):
             if BANLIMIT:
                 bancounter = FAIL2BAN_IPS.get(self.client_address[0], 1)
                 if bancounter >= BANLIMIT:
-                    print("Blocking access from %s" % self.client_address[0])
+                    LOG.warn("Blocking access from %s" % self.client_address[0])
                     self.do_BLOCK()
                     return
                 else:
@@ -3228,7 +3455,7 @@ class AuthHandler(RequestHandler):
             if BANLIMIT:
                 bancounter = FAIL2BAN_IPS.get(self.client_address[0], 1)
                 if bancounter >= BANLIMIT:
-                    print("Blocking access from %s" % self.client_address[0])
+                    LOG.warn("Blocking access from %s" % self.client_address[0])
                     self.do_BLOCK()
                     return
                 else:
@@ -3241,7 +3468,7 @@ def main(args):
     global HTTPD, CREDENTIALS
     if args:
         load_settings(args[0])
-    print("Starting server")
+    LOG.info("Starting server")
     server_address = (LISTENIP, LISTENPORT)
     if CREDENTIALS:
         CREDENTIALS = base64.b64encode(bytes(CREDENTIALS, "utf-8"))
@@ -3256,7 +3483,7 @@ def main(args):
                                        certfile=SSL_CERTIFICATE,
                                        keyfile=SSL_KEY,
                                        server_side=True)
-    print('Listening on: %s://%s:%i' % ('https' if SSL_CERTIFICATE else 'http',
+    LOG.info('Listening on: %s://%s:%i' % ('https' if SSL_CERTIFICATE else 'http',
                                         LISTENIP,
                                         LISTENPORT))
     if BASEPATH:

@@ -1,0 +1,5 @@
+sequence:
+- service: remote.turn_on
+  entity_id: remote.bedroom
+  data:
+    activity: "26029476"

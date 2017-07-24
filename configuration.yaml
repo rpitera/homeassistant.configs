@@ -28,10 +28,15 @@ logger:
   logs:
     homeassistant.components.media_player.firetv: fatal
     homeassistant.components.media_player.cast: fatal
-    homeassistant.components.cameras: fatal
+    homeassistant.components.cameras: error
     homeassistant.components.wink: critical
-    homeassistant.components.sensor.darksky: info
+    homeassistant.components.octoprint: critical
+    
 frontend:
+  themes:
+    stealth:
+      primary-color: black
+
 history:
   include:
     domains:
@@ -67,7 +72,7 @@ logbook:
 updater:
   reporting: false
 recorder:
-  # Delete events and states older than 1 weeks
+  # Delete events and states older than 1 week
   purge_days: 7
   db_url: !secret db_url
   include:
@@ -86,6 +91,7 @@ recorder:
      - sensor.date
 config:
 
+
 ####################################################
 #                                                  #
 #                     Includes                     #
@@ -96,12 +102,13 @@ group: !include groups.yaml
 sensor: !include devices/sensors.yaml
 binary_sensor: !include devices/binary_sensors.yaml
 camera: !include devices/cameras.yaml
+shell_command: !include shell_commands.yaml
 script: !include_dir_named scripts
 scene: !include_dir_merge_list scenes
 automation: !include_dir_merge_list automations
 input_boolean: !include devices/input_booleans.yaml
-shell_command: !include shell_commands.yaml
 input_select: !include devices/input_selects.yaml
+input_slider: !include devices/input_sliders.yaml
 media_player: !include devices/media_players.yaml
 device_tracker: !include device_trackers.yaml
 ####################################################
@@ -116,34 +123,46 @@ device_tracker: !include device_trackers.yaml
 ecobee:
   api_key: !secret ecobee_api_key
   hold_temp: False
+
 #
 # Wink API
 #
 wink:
-  email: !secret wink_email
-  password: !secret wink_password
-  client_id: !secret wink_client_id
-  client_secret: !secret wink_client_secret
+  local_control: True
+  # email: !secret wink_email
+  # password: !secret wink_password
+  # client_id: !secret wink_client_id
+  # client_secret: !secret wink_client_secret
+
 #
 # Hue API
 #
 light:
   platform: hue
-  host: 192.168.1.151
+  host: 192.168.1.221
   scan_interval: 10
   allow_unreachable: true
   filename: phue.conf
+
 #
 # IFTTT API
 #
 ifttt:
   key: !secret ifttt_key
+
 #
 # Nest API
 #
 nest:
   client_id: !secret nest_client_id
   client_secret: !secret nest_client_secret
+
+#
+# Ring API
+#
+ring:
+  username: !secret ring_username
+  password: !secret ring_password
 
 #
 # ZWave Configs
@@ -153,19 +172,12 @@ zwave:
   config_path: /srv/hass/hass_venv/lib/python3.4/site-packages/libopenzwave-0.3.1-py3.4-linux-armv7l.egg/config
   polling_interval: 60000
   device_config: !include zwave_device_config.yaml
+  new_entity_ids: false
   
-  #Removed for update to 0.40.x
-  #customize:
-  #  binary_sensor.aeotec_multisensor_6_sensor_7_0:
-  #      polling_intensity: 1
-  #  binary_sensor.aeotec_multisensor_6_sensor_8_0:
-  #      polling_intensity: 1
-
 
 #
 # Proximity
 #
-
 proximity:
   home:
     devices:
@@ -198,12 +210,14 @@ notify:
   - platform: kodi
     name: kodi
     host: http://192.168.1.248
+
 #
 # TTS Settings
 #
 tts:
   - platform: google
     language: 'en-uk'
+    cache: false
 
 #
 #
@@ -247,6 +261,24 @@ alexa:
             the door is unlocked Robert
           {% endif %}
 
+    SecureHouseIntent:
+      action:
+        event: SECURE
+        event_data:
+          type: secure
+      speech:
+        type: plaintext
+        text: ""
+    
+    QueryHouseIntent:
+      action:
+        event: SECURE
+        event_data:
+          type: query        
+      speech:
+        type: plaintext
+        text: ""
+
 
 #
 #
@@ -265,6 +297,10 @@ remote:
     name: Living Room
     host: 192.168.1.172
 
+  - platform: harmony
+    name: Bedroom
+    host: 192.168.1.214
+
 #
 #
 # Configurator Integration
@@ -275,6 +311,65 @@ panel_iframe:
     icon: mdi:wrench
     url: https://westofeast.no-ip.org:3218
 
+
+#
+#
+# Anroid IP Webcam Integration
+#
+android_ip_webcam:
+  - host: 192.168.1.212
+    name: PrinterCam
+    scan_interval: 10
+    sensors:
+      - audio_connections
+      - battery_level
+      - battery_temp
+      - battery_voltage
+      - light
+      - motion
+      - pressure
+    switches:
+      - exposure_lock
+      - ffc
+      - focus
+      - gps_active
+      - night_vision
+      - overlay
+      - torch
+      - whitebalance_lock
+      - video_recording
+ 
+  - host: 192.168.1.217
+    name: second floor
+    scan_interval: 10
+    sensors:
+      - audio_connections
+      - battery_level
+      - battery_temp
+      - battery_voltage
+      - light
+      - motion
+      - pressure
+    switches:
+      - exposure_lock
+      - ffc
+      - focus
+      - gps_active
+      - night_vision
+      - overlay
+      - torch
+      - whitebalance_lock
+      - video_recording
+
+
+#
+#
+# OctoPrint Integration
+#
+octoprint:
+  host: 192.168.1.170:5000
+  api_key: !secret octoprint_api_key
+  
 #
 #
 # Web Links for admin
@@ -290,12 +385,16 @@ weblink:
     - name: phpMyAdmin
       url: http://192.168.1.181/phpmyadmin
       icon: mdi:database
+    - name: OctoPrint
+      url: http://192.168.1.170:5000
+      icon: mdi:printer-3d
     - name: Kodi Interface
       url: http://192.168.1.248:8080
       icon: mdi:kodi
     - name: Plex Interface
       url: http://plex.tv
       icon: mdi:plex
+    
 
 #
 #
@@ -304,15 +403,3 @@ weblink:
 ffmpeg:
   ffmpeg_bin: /usr/bin/ffmpeg
 
-
-#
-#
-# Input Slider for Internet Radio
-#
-input_slider:
-  volume_radio:
-    name: Volume
-    icon: mdi:volume-high
-    min: 0
-    max: 1
-    step: 0.05

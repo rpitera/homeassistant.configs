@@ -9,6 +9,18 @@ living_room_tv:
     - Listen to Music
   initial: Powered Off
   icon: mdi:monitor
+
+bedroom_tv:
+  name: Bedroom TV
+  options:
+    - Powered Off
+    - Watch TV
+    - Watch FireTV
+    - Chromecast    
+  initial: Powered Off
+  icon: mdi:monitor
+
+
 camera1:
   name: Front Camera Presets
   options:
@@ -17,6 +29,7 @@ camera1:
     - front walk
   initial: street view
   icon: mdi:camcorder
+
 camera2:
   name: Rear Camera Presets
   options:
@@ -26,6 +39,7 @@ camera2:
     - yard northwest
   initial: bedroom window
   icon: mdi:camcorder
+
 radio_station:
   name: 'Select Radio Station:'
   options:

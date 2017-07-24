@@ -28,9 +28,70 @@
      - pressure
      - visibility
      - ozone
-     - minutely_summary
-     - hourly_summary
-     - daily_summary
+
+#
+#
+# WeatherUnderground 
+#
+-  platform: wunderground
+   api_key: !secret wunderground_api_key
+   pws_id: KNJSCOTC5
+   monitored_conditions:
+      - weather
+      - temp_f
+      - station_id
+      - elevation
+      - location
+      - observation_time
+      - feelslike_f
+      - feelslike_string
+      - heat_index_f
+      - heat_index_string
+      - dewpoint_f
+      - dewpoint_string
+      - wind_mph
+      - UV
+      - pressure_in
+      - pressure_mb
+      - pressure_trend
+      - wind_dir
+      - wind_degrees
+      - wind_string
+      - relative_humidity
+      - visibility_mi
+      - precip_1hr_in
+      - precip_today_in
+      - precip_today_string
+      - solarradiation
+      - alerts
+      - weather_1d
+      - weather_1n
+      - weather_2d
+      - weather_2n
+      - weather_3d
+      - weather_3n
+      - weather_4d
+      - weather_4n
+      - weather_1h
+      - weather_6h
+
+
+#
+#
+#  Moon phase sensor
+#
+#
+- platform: moon
+
+#
+#
+#  Weather Statistical Sensors
+#
+#
+-  platform: statistics
+   name: Temperature Stats
+   entity_id: sensor.pws_temp_f
+
 
 #
 # Internet (Speedtest)
@@ -47,6 +108,7 @@
      - ping
      - download
      - upload
+
 #
 # System sensors
 #
@@ -69,6 +131,12 @@
 -  platform: command_line
    name: Installed version
    command: "/srv/hass/hass_venv/bin/hass --version"
+
+-  platform: command_line
+   name: SSL Cert Expiration
+   unit_of_measurement: days
+   scan_interval: 10800
+   command: "ssl-cert-check -b -c /etc/letsencrypt/live/westofeast.no-ip.org/cert.pem | awk '{ print $NF }'"
 
 
 -  platform: glances
@@ -109,6 +177,31 @@
      mode: driving
 
 -  platform: google_travel_time
+   name: Westfield Travel Time
+   api_key: !secret google_maps_api_key
+   origin: 40.65894, -74.39036
+   destination: 40.652382, -74.349891
+   options:
+     mode: driving
+
+-  platform: google_travel_time
+   name: Garwood Travel Time
+   api_key: !secret google_maps_api_key
+   origin: 40.65894, -74.39036
+   destination: 40.652462, -74.331076
+   options:
+     mode: driving
+
+
+-  platform: google_travel_time
+   name: Bound Brook Travel Time
+   api_key: !secret google_maps_api_key
+   origin: 40.65894, -74.39036
+   destination: 40.574260, -74.553277
+   options:
+     mode: driving
+
+-  platform: google_travel_time
    name: Bridgewater Area Travel Time
    api_key: !secret google_maps_api_key
    origin: 40.65894, -74.39036
@@ -139,45 +232,91 @@
    destination: 40.821860, -75.649590
    options:
      mode: driving
-#
-#
-#
-#
-# WeatherUnderground 
-#
--  platform: wunderground
-   api_key: !secret wunderground_api_key
-   pws_id: KNJSCOTC5
-   monitored_conditions:
-      - weather
-      - temp_f
-      - station_id
-      - elevation
-      - location
-      - observation_time
-      - feelslike_f
-      - feelslike_string
-      - heat_index_f
-      - heat_index_string
-      - dewpoint_f
-      - dewpoint_string
-      - wind_mph
-      - UV
-      - pressure_in
-      - pressure_mb
-      - pressure_trend
-      - wind_dir
-      - wind_degrees
-      - wind_string
-      - relative_humidity
-      - visibility_mi
-      - precip_1hr_in
-      - precip_today_in
-      - precip_today_string
-      - solarradiation
-      - alerts
 
 
+#
+#
+#  Plex Activity Monitor
+#
+#
+
+-  platform: plex
+   host: 192.168.1.195
+   name: Nirvana
+
+#
+#
+#  SNMP Monitor
+#
+#
+
+-  platform: snmp
+   host: 192.168.1.152
+   name: zen_snmp
+   baseoid: 1.3.6.1.2.1.1.5.0
+
+-  platform: snmp
+   host: 192.168.1.170
+   name: satori_snmp
+   baseoid: 1.3.6.1.2.1.1.5.0
+
+
+#
+#
+#  MQTT Sensors
+#
+#
+
+- platform: mqtt
+  state_topic: 'owntracks/rpitera/rpitera'
+  name: 'Droid Battery'
+  unit_of_measurement: '%'
+  value_template: '{{ value_json.batt }}'
+
+#
+#
+#  Air Quality Index
+#
+#
+
+- platform: waqi
+  token: !secret waqi_token
+  locations:
+    - Rahway
+
+#
+#
+# Ring Doorbell 
+#
+
+- platform: ring
+  entity_namespace: 'ring'
+  monitored_conditions:
+    - battery
+    - last_activity
+    - last_ding
+    #- last_motion
+    - volume
+
+- platform: crimereports
+  name: Local Crime Reports
+  radius: 750
+
+- platform: octoprint
+  name: OctoPrint
+  monitored_conditions:
+    - Current State
+    - Temperatures
+    - Job Percentage
+
+
+
+
+####################################################
+#                                                  #
+#               Template Sensors                   #
+#                                                  #
+####################################################
 
 
 
@@ -188,7 +327,7 @@
 -  platform: template
    sensors:
      epsonprinter:
-       value_template: "{% if is_state('device_tracker.epson3e7694fiosrouterhome', 'home') %}on{% else %}off{% endif %}"
+       value_template: "{% if is_state('device_tracker.epson25e37cfiosrouterhome', 'home') %}on{% else %}off{% endif %}"
      brotherprinter:
        value_template: "{% if is_state('device_tracker.19216819', 'home') %}on{% else %}off{% endif %}"
      satori:
@@ -282,8 +421,12 @@
 #
 #
      current_activity:
-       friendly_name: 'Current Activity'
+       friendly_name: 'Current Activity LR'
        value_template: "{{ states.remote.living_room.attributes.current_activity }}"
+     
+     current_activity_br:
+       friendly_name: 'Current Activity BR'
+       value_template: "{{ states.remote.bedroom.attributes.current_activity }}"
 
 
 #
@@ -310,123 +453,144 @@
 
 #
 #
-#  Sensor last updates
+#  OctoPrint Sensor conversions
 #
 #
 
-     dark_sky_lu:
-       friendly_name: Forecast Last Updated
-       value_template: '{{(as_timestamp(now())-as_timestamp(states.sensor.dark_sky_minutely_summary.last_updated)) | int //60 }} Minutes Ago' 
+     hotend:
+       friendly_name: 'Hotend Actual'
+       value_template: "{{ ((states.sensor.octoprint_actual_tool0_temp.state | float-32) | float*(5/9)) | round(2) }} °C"
+       
+     bed:
+       friendly_name: 'Bed Actual'
+       value_template: "{{ ((states.sensor.octoprint_actual_bed_temp.state | float-32) | float*(5/9)) | round(2) }} °C"
+       
+
+     hotend_target:
+       friendly_name: 'Hotend Target'
+       value_template: "{{ ((states.sensor.octoprint_target_tool0_temp.state | float-32) | float*(5/9)) | round(2) }} °C"
+       
+     bed_target:
+       friendly_name: 'Bed Target'
+       value_template: "{{ ((states.sensor.octoprint_target_bed_temp.state | float-32) | float*(5/9)) | round(2) }} °C"
+       
        
 #
 #
-#  Moon phase sensor
-#
-#
-- platform: moon
-
-#
-#
-#  Weather Statistical Sensors
-#
-#
--  platform: statistics
-   name: Temperature Stats
-   entity_id: sensor.pws_temp_f
-
-
-#
-#
-#  Plex Activity Monitor
+#  Android IP Webcam Sensor conversions
 #
 #
 
--  platform: plex
-   host: 192.168.1.195
-   name: Nirvana
+     webcam_ambient_temp:
+       friendly_name: Webcam Ambient Temperature
+       unit_of_measurement: "°F"
+       value_template: "{{ (float(states.sensor.webcam_battery_temperature.state) * 1.8 + 32) | round(2) }}"
+
+     webcam_pressure_inches:
+       friendly_name: Webcam Pressure Inches
+       unit_of_measurement: "inches"
+       value_template: "{{ (float(states.sensor.webcam_pressure.state) * 0.0295301) | round(2) }}"
 
 #
 #
-#  SNMP Monitor
+#  Ring Sensor last updates
 #
 #
 
--  platform: snmp
-   host: 192.168.1.152
-   name: zen_snmp
-   baseoid: 1.3.6.1.2.1.1.5.0
-
--  platform: snmp
-   host: 192.168.1.170
-   name: satori_snmp
-   baseoid: 1.3.6.1.2.1.1.5.0
+     ring_last_ding:
+       friendly_name: Last Ding Time
+       value_template: "{{ as_timestamp(states.sensor.ring_doorbell_last_ding.attributes.created_at) |  timestamp_custom('%D %-I:%M %P') }}" 
+  
+     ring_last_activity:
+       friendly_name: Last Activity Time
+       value_template: "{{ as_timestamp(states.sensor.ring_doorbell_last_activity.attributes.created_at) |  timestamp_custom('%D %-I:%M %P') }}" 
+  
+     # ring_last_motion:
+     #   friendly_name: Last Motion Time
+     #   value_template: "{{ as_timestamp(states.sensor.ring_doorbell_last_motion.attributes.created_at) |  timestamp_custom('%D %-I:%M %P') }}"
+  
 
 
 #
 #
-#  MQTT Sensors
+#  Battery level template sensors
 #
 #
 
-- platform: mqtt
-  state_topic: 'owntracks/rpitera/rpitera'
-  name: 'Droid Battery'
-  unit_of_measurement: '%'
-  value_template: '{{ value_json.batt }}'
+     front_entry_battery:
+       value_template: "{{ states.binary_sensor.front_entry_opened.attributes.battery_level }}"
+       friendly_name: "Front Entry Sensor Battery"
+       entity_id: binary_sensor.front_entry_opened
+       unit_of_measurement: '%'
 
-#
-#
-#  Air Quality Index
-#
-#
+     kitchen_entry_battery:
+       value_template: "{{ states.binary_sensor.kitchen_entry_opened.attributes.battery_level }}"
+       friendly_name: "Kitchen Entry Sensor Battery"
+       entity_id: binary_sensor.kitchen_entry_opened
+       unit_of_measurement: '%'
 
-- platform: waqi
-  token: !secret waqi_token
-  locations:
-    - Rahway
+     side_entry_battery:
+       value_template: "{{ states.binary_sensor.side_entry_opened.attributes.battery_level }}"
+       friendly_name: "Side Entry Sensor Battery"
+       entity_id: binary_sensor.side_entry_opened
+       unit_of_measurement: '%'
 
-#
-#
-# Ring Doorbell (beta)
-#
-- platform: ring
-  username: !secret ring_username
-  password: !secret ring_password
-  entity_namespace: 'ring'
-  monitored_conditions:
-    - battery
-    - last_activity
-    - volume
+     tea_room_slider_battery:
+       value_template: "{{ states.binary_sensor.tea_room_slider_opened.attributes.battery_level }}"
+       friendly_name: "Tea Room Slider Sensor Battery"
+       entity_id: binary_sensor.tea_room_slider_opened
+       unit_of_measurement: '%'
 
-#
-#
-#  Yahoo Weather Forecasting
-#
-#
+     dining_room_1_battery:
+       value_template: "{{ states.binary_sensor.dining_room_1_opened.attributes.battery_level }}"
+       friendly_name: "Dining Room Window 1 Sensor Battery"
+       entity_id: binary_sensor.dining_room_1_opened
+       unit_of_measurement: '%'
 
-- platform: yweather
-  forecast: 1
-  name: day1
-  monitored_conditions:
-    - weather
-    - temp_min
-    - temp_max
+     dining_room_2_battery:
+       value_template: "{{ states.binary_sensor.dining_room_2_opened.attributes.battery_level }}"
+       friendly_name: "Dining Room Window 2 Sensor Battery"
+       entity_id: binary_sensor.dining_room_2_opened
+       unit_of_measurement: '%'
 
-- platform: yweather
-  forecast: 2
-  name: day2
-  monitored_conditions:
-    - weather
-    - temp_min
-    - temp_max
+     mailbox_battery:
+       value_template: "{{ states.binary_sensor.mailbox_opened.attributes.battery_level }}"
+       friendly_name: "Mailbox Sensor Battery"
+       entity_id: binary_sensor.mailbox_opened
+       unit_of_measurement: '%'
 
-- platform: yweather
-  forecast: 3
-  name: day3
-  monitored_conditions:
-    - weather
-    - temp_min
-    - temp_max
+     office_motion_battery:
+       value_template: "{{ states.binary_sensor.office_motion.attributes.battery_level }}"
+       friendly_name: "Office Sensor Battery"
+       entity_id: binary_sensor.office_motion
+       unit_of_measurement: '%'
+
+     tearoom_motion_battery:
+       value_template: "{{ states.binary_sensor.tearoom_motion.attributes.battery_level }}"
+       friendly_name: "Tea Room Sensor Battery"
+       entity_id: binary_sensor.tearoom_motion
+       unit_of_measurement: '%'
+
+     second_floor_motion_battery:
+       value_template: "{{ states.binary_sensor.second_floor_motion.attributes.battery_level }}"
+       friendly_name: "Second Floor Sensor Battery"
+       entity_id: binary_sensor.second_floor_motion
+       unit_of_measurement: '%'
+
+     siren_battery:
+       value_template: "{{ states.switch.siren__strobe.attributes.battery_level }}"
+       friendly_name: "Siren/Strobe Battery"
+       entity_id: switch.siren__strobe
+       unit_of_measurement: '%'
+
+     garagedoor_battery:
+       value_template: "{{ states.zwave.vision_zg8101_garage_door_detector_12.attributes.battery_level }}"
+       friendly_name: "Garage Door Sensor Battery"
+       entity_id: zwave.vision_zg8101_garage_door_detector_12
+       unit_of_measurement: '%'
+
+
+
 
 
 
