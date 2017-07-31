@@ -8,6 +8,7 @@ default_view:
   - group.laundry
   - group.events
   - group.forecast
+  #- weather.weather_today
   - group.perimiter
   - group.outdoor_lighting
   - group.motion_sensors
@@ -549,7 +550,7 @@ almanac:
 aqi:
   name: air quality index
   entities:
-  - sensor.waqi_rahway_pm_newjersey
+  - sensor.waqi_rahway_pm_newjersey_usa
   - sensor.dark_sky_ozone
 camera_presets:
   name: camera presets

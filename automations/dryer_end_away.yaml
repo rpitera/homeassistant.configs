@@ -3,7 +3,7 @@
   trigger:
     platform: state
     entity_id: sensor.aeotec_smart_switch_6_power_11_8
-    state: '0.0'
+    to: '0.0'
   condition:
     condition: and
     conditions:

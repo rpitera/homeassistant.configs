@@ -3,7 +3,7 @@
   trigger:
     platform: state
     entity_id: binary_sensor.vision_zg8101_garage_door_detector_sensor_12_0
-    state: 'on'
+    to: 'on'
   condition:
     condition: sun
     after: sunset

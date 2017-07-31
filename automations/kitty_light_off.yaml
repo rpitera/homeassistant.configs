@@ -2,7 +2,7 @@
 - alias: 'Kitty Light Off'
   trigger:
     platform: time
-    after: '23:00'
+    at: '23:00'
   action:
     service: light.turn_off
     data_template:

@@ -353,15 +353,15 @@
 #   Automation Templates
 #
 #    True when washer power level is below 3.4 watts, high threshold of resting state
-#    Default state is true
+#    Default state is false
      washer_pwrup:
        value_template: "{{ states('sensor.aeotec_smart_switch_6_power_10_8') | int > 3.4 }}"
        
 
-#    True when Dryer power level is above 8.4 watts, showing dryer is in operation (as opposed to just having the door open)
+#    True when Dryer power level is above 9.0 watts, showing dryer is in operation (as opposed to just having the door open)
 #    Default state is false
      dryer_pwrup:
-       value_template: "{{ states('sensor.aeotec_smart_switch_6_power_11_8') | int > 8.4 }}"
+       value_template: "{{ states('sensor.aeotec_smart_switch_6_power_11_8') | int > 9.0 }}"
        
 #
 #
