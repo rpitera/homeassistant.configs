@@ -4,14 +4,13 @@ default_view:
   entities:
   - updater.updater
   - persistent_notification.invalid_config
-  - group.presence
-  - group.laundry
-  - group.events
-  - group.forecast
-  #- weather.weather_today
+  - weather.weather_today
   - group.perimiter
-  - group.outdoor_lighting
   - group.motion_sensors
+  - group.laundry
+  - group.presence
+  - group.events
+  - group.outdoor_lighting
   - group.avg_temps
   - group.alarm_system
   - group.almanac
@@ -171,12 +170,8 @@ perimiter:
   - lock.front_door
   - binary_sensor.vision_zg8101_garage_door_detector_sensor_12_0
   - binary_sensor.mailbox_opened
-  - binary_sensor.front_entry_opened
-  - binary_sensor.kitchen_entry_opened
-  - binary_sensor.side_entry_opened
-  - binary_sensor.tea_room_slider_opened
-  - binary_sensor.dining_room_1_opened
-  - binary_sensor.dining_room_2_opened
+  - group.doors
+  - group.windows
 bedroom:
   name: bedroom
   entities:
@@ -185,6 +180,8 @@ bedroom:
   - light.lightstrip1
   - light.bedroom_left
   - light.bedroom_right
+  - binary_sensor.brwl_opened
+  - binary_sensor.brwr_opened
 tearoom:
   name: tea room
   entities:
@@ -197,8 +194,8 @@ diningroom:
   name: dining room
   entities:
   - light.dining_room
-  - binary_sensor.dining_room_1_opened
-  - binary_sensor.dining_room_2_opened
+  - binary_sensor.drwl_sensor_14_0
+  - binary_sensor.drwr_sensor_15_0
 livingroom:
   name: living room
   entities:
@@ -211,8 +208,8 @@ livingroom:
   - light.lightstrip2
   - light.lightstrip3
   - light.lightstrip4
-  - light.tv_light_l
-  - light.tv_light_r
+  - light.uplight_left
+  - light.uplight_right
 hallway:
   name: hallway
   entities:
@@ -232,9 +229,9 @@ upstairs:
   entities:
   - binary_sensor.second_floor_motion
   - binary_sensor.upstairs_occupancy
+  - binary_sensor.upstairs_bathroom_liquid_detected
   - sensor.upstairs_temperature
-  - sensor.second_floor_temperature
-  - group.nest_protect_upstairs  
+  - group.nest_protect_upstairs
 basement:
   name: basement
   entities:
@@ -587,7 +584,7 @@ links:
 night_switches:
   name: night switch group
   entities:
-  - switch.office
+  - switch.wall_unit
   - switch.outlet_2
   - switch.outlet_1
   - switch.aeotec_smart_energy_switch_switch_9_0
@@ -601,7 +598,10 @@ zwave_devices:
   - zwave.aeotec_smart_switch_6_10
   - zwave.aeotec_smart_switch_6_11
   - zwave.vision_zg8101_garage_door_detector_12
-  - zwave.aeotec_home_energy_meter_13
+  - zwave.aeotec_dsb09104_home_energy_meter_13
+  - zwave.drwl_14
+  - zwave.drwr_15
+  - zwave.stairsw_16
 android_printercam:
   name: android printercam controls
   entities:
@@ -670,10 +670,25 @@ sensor_batteries:
 home_energy_meter:
   name: home energy meter
   entities:
-  - zwave.aeotec_home_energy_meter_13
-  - sensor.aeotec_home_energy_meter_interval_13_2
-  - sensor.aeotec_home_energy_meter_interval_13_2_2
-  - sensor.aeotec_home_energy_meter_interval_13_2_3
-  - sensor.aeotec_home_energy_meter_previous_reading_13_1
-  - sensor.aeotec_home_energy_meter_previous_reading_13_1_2
-  - sensor.aeotec_home_energy_meter_previous_reading_13_1_3
+  - zwave.aeotec_dsb09104_home_energy_meter_13
+  - sensor.aeotec_dsb09104_home_energy_meter_power_13_4
+  - sensor.aeotec_dsb09104_home_energy_meter_energy_13_0
+  - sensor.aeotec_dsb09104_home_energy_meter_previous_reading_13_1
+  - sensor.aeotec_dsb09104_home_energy_meter_interval_13_2
+  
+  
+windows:
+  name: Windows
+  entities:
+  - binary_sensor.brwl_opened
+  - binary_sensor.brwr_opened
+  - binary_sensor.drwl_sensor_14_0
+  - binary_sensor.drwr_sensor_15_0
+  - binary_sensor.stairsw_sensor_16_0
+doors:
+  name: Doors
+  entities:
+  - binary_sensor.front_entry_opened
+  - binary_sensor.kitchen_entry_opened
+  - binary_sensor.side_entry_opened
+  - binary_sensor.tea_room_slider_opened

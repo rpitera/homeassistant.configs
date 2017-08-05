@@ -2,7 +2,7 @@
   entities:
     light.lightstrip4:
         state: on
-        transition: 4
+        transition: 3
         brightness: 125
         xy_color: [ 0.5384, 0.445 ]
     light.lightstrip2:
@@ -12,18 +12,16 @@
         xy_color: [ 0.5493, 0.4351 ]
     light.lightstrip3:
         state: on
-        transition: 4
+        transition: 5
         brightness: 125
         xy_color: [ 0.6168, 0.3737 ]
-    light.tv_light_l:
+    light.uplight_left:
         state: on
         transition: 6
         brightness: 136
-        color_temp: 500
-        xy_color: [ 0.6735, 0.322 ]
-    light.tv_light_r:
+        rgb_color: [ 255, 0, 0 ]
+    light.uplight_right:
         state: on
         transition: 6
         brightness: 136
-        color_temp: 500
-        xy_color: [ 0.6735, 0.322 ]
+        rgb_color: [ 255, 0, 0 ]

@@ -4,10 +4,6 @@
         state: on
         brightness: 141
         xy_color: [0.3487, 0.4412]
-    light.tv_light_l:
-        state: on
-        brightness: 103
-        xy_color: [0.4084, 0.5168]
     light.lightstrip4:
         state: on
         brightness: 159
@@ -16,7 +12,11 @@
         state: on
         brightness: 186
         xy_color: [0.3494, 0.5763]
-    light.tv_light_r:
+    light.uplight_left:
         state: on
         brightness: 103
-        xy_color: [0.408, 0.517]
+        rgb_color: [0, 255, 0]
+    light.uplight_right:
+        state: on
+        brightness: 103
+        rgb_color: [0, 255, 0]

@@ -20,10 +20,10 @@
       entity_id: binary_sensor.tea_room_slider_opened
       to: 'on'
     - platform: state
-      entity_id: binary_sensor.dining_room_1_opened
+      entity_id: binary_sensor.brwl_opened
       to: 'on'
     - platform: state
-      entity_id: binary_sensor.dining_room_2_opened
+      entity_id: binary_sensor.brwr_opened
       to: 'on'
     - platform: state
       entity_id: binary_sensor.tea_room_slider_opened
